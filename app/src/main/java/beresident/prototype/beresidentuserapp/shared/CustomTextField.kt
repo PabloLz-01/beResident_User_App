@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -51,7 +52,8 @@ fun CustomTextField(
                 .padding(bottom = textPadding),
             textAlign = TextAlign.Start,
             color = Grey,
-            fontSize = 12.sp
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold
         )
         BasicTextField(
             value = values.text,

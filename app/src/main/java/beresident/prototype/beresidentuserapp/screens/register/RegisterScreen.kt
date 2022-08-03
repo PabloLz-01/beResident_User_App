@@ -8,7 +8,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.misc.Screen
 import beresident.prototype.beresidentuserapp.shared.*
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
@@ -43,23 +46,23 @@ fun RegisterScreen(navController: NavController){
     Scaffold (backgroundColor = Color.White, scaffoldState = scaffoldState){
 
         Column {
-            HeaderTitle(text = "Registro de usuarios", prevRoute = Screen.LoginScreen.route, navController)
+            HeaderTitle(stringResource(R.string.register), prevRoute = Screen.LoginScreen.route, navController)
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = DefaultTheme.dimens.grid_5)
+                    .padding(horizontal = 12.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_2))
                 CustomTextField(name, "Nombre(s)",  bottomPadding = DefaultTheme.dimens.grid_1_5)
                 CustomTextField(lastName, "Apellido(s)", bottomPadding = DefaultTheme.dimens.grid_1_5)
-                CustomTextField(phone, "Celular", bottomPadding = DefaultTheme.dimens.grid_1_5)
-                CustomTextField(email, "Correo", bottomPadding = DefaultTheme.dimens.grid_1_5)
-                CustomTextField(confirmEmail, "Confirme su correo electronico", bottomPadding = DefaultTheme.dimens.grid_1_5)
+                CustomTextField(phone, stringResource(R.string.phone_number), bottomPadding = DefaultTheme.dimens.grid_1_5)
+                CustomTextField(email, stringResource(R.string.email), bottomPadding = DefaultTheme.dimens.grid_1_5)
+                CustomTextField(confirmEmail, stringResource(R.string.confirm_email), bottomPadding = DefaultTheme.dimens.grid_1_5)
                 CustomTextField(password, "Contraseña", bottomPadding = DefaultTheme.dimens.grid_1_5, password = true)
                 CustomTextField(confirmPassword, "Confirme su contraseña",  password = true, bottomPadding = DefaultTheme.dimens.grid_1)
-                CheckBox(checkbox, text = "Conozco los términos y condiciones, el aviso de privacidad y el aviso de cargos periodicos y estoy de acuerdo",
+                CheckBox(checkbox, stringResource(R.string.checkbox_terms),
                     action = {
                         checkbox.isCheck = !checkbox.isCheck
                         if (checkbox.isCheck) {
@@ -69,7 +72,7 @@ fun RegisterScreen(navController: NavController){
                         }
                     })
                 Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_2))
-                CustomButton(text = "Iniciar sesion", action = {
+                CustomButton(stringResource(R.string.login), action = {
                     if (name.text == "" || lastName.text == "") {
                         snackbarText = "Por favor rellene todos los campos"
                         snackbarColor = snackbarError

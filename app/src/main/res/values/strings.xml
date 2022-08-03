@@ -1,3 +1,35 @@
 <resources>
     <string name="app_name">beResident User App</string>
+
+    <!-- General use -->
+    <string name="email">Correo electrónico</string>
+    <string name="phone_number">Número de teléfono</string>
+    <string name="remember_me">Recordarme</string>
+
+    <!-- Login, register and forgot password-->
+    <string name="login">Iniciar sesión</string>
+    <string name="register">Registro</string>
+    <string name="checkbox_terms">Acepto los términos y condiciones, el aviso de privacidad y el aviso de cargos periódicos</string>
+    <string name="create_account">Crear una cuenta</string>
+    <string name="confirm_email">Confirme su correo electrónico</string>
+    <string name="valid_email">Introduzca el correo electrónico de su cuenta y pulse el botón de Enviar enlace de verificación</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="send_verification_link">Enviar enalce de verificación</string>
+    <string name="recover_password">Recuperación de contraseña</string>
+
+    <!-- Examples -->
+    <!-- basic string with an argument -->
+    <string name="greeting">Hello %!</string>
+
+    <!-- plural string -->
+    <plurals name="likes">
+        <item quantity="one">%1d like</item>
+        <item quantity="other">%1d likes</item>
+    </plurals>
+
+    <!-- string array -->
+    <string-array name="planets">
+        <item>Earth</item>
+        <item>Mars</item>
+    </string-array>
 </resources>

@@ -4,14 +4,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.misc.Screen
 import beresident.prototype.beresidentuserapp.shared.CheckBox
 import beresident.prototype.beresidentuserapp.shared.CustomButton
@@ -34,9 +37,11 @@ fun LoginScreen(navController: NavController){
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = SnackbarHostState()
+    var showSnackbar = true
 
     var snackbarText: String
     var snackbarColor: Color = snackbarError
+
 
     Scaffold (
         backgroundColor = Color.White,
@@ -51,7 +56,7 @@ fun LoginScreen(navController: NavController){
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp)
             ) {
-                CustomTextField(emailState, "Correo", bottomPadding = DefaultTheme.dimens.grid_2)
+                CustomTextField(emailState, stringResource(R.string.email), bottomPadding = DefaultTheme.dimens.grid_2)
                 CustomTextField(passwordState, "Contraseña", password = true, bottomPadding = DefaultTheme.dimens.grid_1_5)
                 Row(
                     modifier = Modifier
@@ -60,18 +65,18 @@ fun LoginScreen(navController: NavController){
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    CheckBox(checkbox, text = "Recordar mi cuenta", action = {})
+                    CheckBox(checkbox, stringResource(R.string.remember_me), action = {})
                     ClickableText(
-                        text = AnnotatedString("Olvide mi contraseña"),
+                        text = AnnotatedString(stringResource(R.string.forgot_password)),
                         onClick = {navController.navigate(Screen.ForgotScreen.route)},
                         style = TextStyle(
                             color = MaterialTheme.colors.secondary,
-                            fontSize = 10.sp
+                            fontSize = 11.sp
                         )
                     )
                 }
                 Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_3))
-                CustomButton(text = "Iniciar sesion", action = {
+                CustomButton(stringResource(R.string.login), action = {
                     if (emailState.text == "" || passwordState.text == "") {
                         snackbarText = "Por favor rellene todos los campos"
                         snackbarColor = snackbarError
@@ -83,8 +88,15 @@ fun LoginScreen(navController: NavController){
                         snackbarColor = Color.Green
                         navController.navigate(Screen.MainScreen.route)
                     }
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
+                    if (showSnackbar){
+                        showSnackbar = false
+                        coroutineScope.launch {
+                            var snackbarResult = snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
+                            when (snackbarResult){
+                                SnackbarResult.Dismissed -> showSnackbar = true
+                                SnackbarResult.ActionPerformed -> showSnackbar = true
+                            }
+                        }
                     }
                 })
                 Division()
@@ -93,10 +105,7 @@ fun LoginScreen(navController: NavController){
                     .height(DefaultTheme.dimens.grid_7),
                     onClick = {navController.navigate(Screen.RegisterScreen.route)},
                 ) {
-                    Text(
-                        "Crear cuenta",
-                        color = Grey,
-                    )
+                    Text(stringResource(R.string.create_account), color = Grey,)
                 }
             }
         }

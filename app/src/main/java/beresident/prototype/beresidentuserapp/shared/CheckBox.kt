@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
@@ -52,7 +53,8 @@ fun CheckBox(
                 .align(Alignment.CenterVertically)
                 .padding(start = 8.dp),
             text = text,
-            fontSize = 10.sp,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold,
             color = Grey
         )
     }

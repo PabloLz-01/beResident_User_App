@@ -14,6 +14,7 @@ fun SnackbarHost(snackbarHostState: SnackbarHostState, color: Color){
     ){
         Snackbar (
             backgroundColor = color,
+
             action = {
                 IconButton(onClick = {snackbarHostState.currentSnackbarData?.dismiss()}) {
                     Icon(Icons.Filled.Close, contentDescription = "Dismiss", tint = Color.White)

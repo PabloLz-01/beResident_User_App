@@ -8,9 +8,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.misc.Screen
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
@@ -37,7 +39,7 @@ fun ForgotScreen(navController: NavController){
                 .padding(bottom = DefaultTheme.dimens.grid_1_5)
         ){
             HeaderTitle(
-                text = "Recuperar contraseña",
+                stringResource(R.string.recover_password),
                 prevRoute = Screen.LoginScreen.route,
                 navController
             )
@@ -45,20 +47,20 @@ fun ForgotScreen(navController: NavController){
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = DefaultTheme.dimens.grid_5)
+                    .padding(horizontal = 12.dp)
             ) {
                 Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_3_5))
-                CustomTextField(emailState, "Correo electronico", bottomPadding = DefaultTheme.dimens.grid_1_5)
-                Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_1_5))
+                CustomTextField(emailState, stringResource(R.string.email), bottomPadding = DefaultTheme.dimens.grid_1_5)
+                Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_1))
                 Text(
-                    text = "Por favor ingrese el e-mail con el que se registro, luego pulse el boton Validar Correo",
+                    stringResource(R.string.valid_email),
                     fontSize = 12.sp,
                     color = Grey,
                     modifier = Modifier
                         .align(Alignment.Start)
                         .padding(bottom = 24.dp)
                 )
-                CustomButton(text = "Validar correo", action = {
+                CustomButton(stringResource(R.string.send_verification_link), action = {
                     if (emailState.text == ""){
                         snackbarText = "Por favor rellene todos los campos"
                         snackbarColor = snackbarError
