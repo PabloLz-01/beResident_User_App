@@ -28,7 +28,7 @@ fun LoginHeader() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = Color.White)
+                .background(color = MaterialTheme.colors.primaryVariant)
                 .align(Alignment.BottomCenter)
                 .height(60.dp)
         )

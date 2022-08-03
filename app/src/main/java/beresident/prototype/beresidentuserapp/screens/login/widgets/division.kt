@@ -2,6 +2,7 @@ package beresident.prototype.beresidentuserapp.screens.login.widgets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,7 +28,7 @@ fun Division() {
             modifier = Modifier
                 .height(20.dp)
                 .width(30.dp)
-                .background(Color.White)
+                .background(MaterialTheme.colors.primaryVariant)
         ){
             Text(
                 "o",

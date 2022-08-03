@@ -2,6 +2,13 @@
 <resources>
 
     <style name="Theme.BeResidentUserApp" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/primaty</item>
+        <item name="android:statusBarColor">@color/primary</item>
     </style>
+
+    <style name="Theme.SplashTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_backgound</item>
+        <item name="android:statusBarColor">@color/primary</item>
+    </style>
+
+
 </resources>

@@ -26,15 +26,16 @@ private  val LocalAppDimens = staticCompositionLocalOf {
 
 private val DarkColorPalette = darkColors(
     primary = Color(12,40,54),
-    primaryVariant = Color(12,40,54),
-    secondary = Color(53,176,130)
-
+    primaryVariant = Color(32, 33, 36, 255),
+    secondary = Color(53,176,130),
+    surface = Color(48,49,52, 255)
 )
 
 private val LightColorPalette = lightColors(
     primary = Color(12,40,54),
-    primaryVariant = Color(12,40,54),
-    secondary = Color(53,176,130)
+    primaryVariant = Color(255,255,255),
+    secondary = Color(53,176,130),
+    surface = Color(240,240,240, 255)
 
     /* Other default colors to override
     background = Color.White,

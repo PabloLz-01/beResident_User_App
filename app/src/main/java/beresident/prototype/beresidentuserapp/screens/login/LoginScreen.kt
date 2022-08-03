@@ -1,19 +1,21 @@
 package beresident.prototype.beresidentuserapp.screens.login
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.misc.Screen
 import beresident.prototype.beresidentuserapp.shared.CheckBox
@@ -44,7 +46,7 @@ fun LoginScreen(navController: NavController){
 
 
     Scaffold (
-        backgroundColor = Color.White,
+        backgroundColor = MaterialTheme.colors.primaryVariant,
         scaffoldState = scaffoldState,
     ){
         Column (modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_1_5)){
@@ -65,7 +67,9 @@ fun LoginScreen(navController: NavController){
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    CheckBox(checkbox, stringResource(R.string.remember_me), action = {})
+                    CheckBox(checkbox, stringResource(R.string.remember_me), action = {
+                        checkbox.isCheck = !checkbox.isCheck
+                    })
                     ClickableText(
                         text = AnnotatedString(stringResource(R.string.forgot_password)),
                         onClick = {navController.navigate(Screen.ForgotScreen.route)},
@@ -120,5 +124,14 @@ fun LoginScreen(navController: NavController){
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun LoginPreview() {
+    DefaultTheme(darkTheme = true){
+        val navController = rememberNavController()
+        LoginScreen(navController = rememberNavController())
     }
 }

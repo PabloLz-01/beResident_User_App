@@ -31,7 +31,7 @@ fun CheckBox(
 
     Row {
         Card(
-            modifier = Modifier.background(LightGrey),
+            modifier = Modifier.background(MaterialTheme.colors.surface),
             elevation = 0.dp,
             shape = RoundedCornerShape(4.dp),
             border = BorderStroke(1.5.dp, color = Color.Transparent)
@@ -39,7 +39,7 @@ fun CheckBox(
             Box(
                 modifier = Modifier
                     .size(15.dp)
-                    .background(if (values.isCheck) MaterialTheme.colors.secondary else LightGrey)
+                    .background(if (values.isCheck) MaterialTheme.colors.secondary else MaterialTheme.colors.surface)
                     .clickable(onClick = action),
                 contentAlignment = Alignment.Center
             ) {

@@ -7,12 +7,16 @@ import androidx.navigation.compose.rememberNavController
 import beresident.prototype.beresidentuserapp.screens.forgot.ForgotScreen
 import beresident.prototype.beresidentuserapp.screens.register.RegisterScreen
 import beresident.prototype.beresidentuserapp.screens.login.LoginScreen
+import beresident.prototype.beresidentuserapp.screens.splash.SplashScreen
 
 
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.LoginScreen.route){
+        composable(route = Screen.SplashScreen.route){
+            SplashScreen(navController)
+        }
         composable(route = Screen.LoginScreen.route){
             LoginScreen(navController)
         }
