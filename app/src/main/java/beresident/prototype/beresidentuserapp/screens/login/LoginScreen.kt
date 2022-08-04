@@ -2,15 +2,12 @@ package beresident.prototype.beresidentuserapp.screens.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,13 +41,14 @@ fun LoginScreen(navController: NavController){
     var snackbarText: String
     var snackbarColor: Color = snackbarError
 
-
     Scaffold (
         backgroundColor = MaterialTheme.colors.primaryVariant,
         scaffoldState = scaffoldState,
     ){
         Column (modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_1_5)){
-            AppHeader()
+            AppHeader(action = {
+                navController.navigate(Screen.SettingsScreen.route)
+            })
             LoginHeader()
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,7 +57,7 @@ fun LoginScreen(navController: NavController){
                     .padding(horizontal = 12.dp)
             ) {
                 CustomTextField(emailState, stringResource(R.string.email), bottomPadding = DefaultTheme.dimens.grid_2)
-                CustomTextField(passwordState, "Contraseña", password = true, bottomPadding = DefaultTheme.dimens.grid_1_5)
+                CustomTextField(passwordState, "Contraseña", password = true)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -70,14 +68,17 @@ fun LoginScreen(navController: NavController){
                     CheckBox(checkbox, stringResource(R.string.remember_me), action = {
                         checkbox.isCheck = !checkbox.isCheck
                     })
-                    ClickableText(
-                        text = AnnotatedString(stringResource(R.string.forgot_password)),
+                    TextButton(
+                        modifier = Modifier
+                            .background(Color.Transparent),
                         onClick = {navController.navigate(Screen.ForgotScreen.route)},
-                        style = TextStyle(
-                            color = MaterialTheme.colors.secondary,
-                            fontSize = 11.sp
+                    ) {
+                        Text(
+                            stringResource(R.string.forgot_password),
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colors.secondary
                         )
-                    )
+                    }
                 }
                 Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_3))
                 CustomButton(stringResource(R.string.login), action = {
@@ -109,7 +110,7 @@ fun LoginScreen(navController: NavController){
                     .height(DefaultTheme.dimens.grid_7),
                     onClick = {navController.navigate(Screen.RegisterScreen.route)},
                 ) {
-                    Text(stringResource(R.string.create_account), color = Grey,)
+                    Text(stringResource(R.string.create_an_account), color = Grey,)
                 }
             }
         }

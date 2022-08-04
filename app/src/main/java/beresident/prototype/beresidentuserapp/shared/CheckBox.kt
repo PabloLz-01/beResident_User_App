@@ -44,7 +44,7 @@ fun CheckBox(
                 contentAlignment = Alignment.Center
             ) {
                 if(values.isCheck)
-                    Icon(Icons.Default.Check, contentDescription = "", tint = Color.White)
+                    Icon(Icons.Default.Check, contentDescription = "", tint = MaterialTheme.colors.surface)
             }
         }
 

@@ -23,6 +23,7 @@ fun SnackbarHost(snackbarHostState: SnackbarHostState, color: Color){
         ){
             Text(
                 text = snackbarHostState.currentSnackbarData?.message?:"",
+                color = Color.White,
                 fontSize = 10.sp
             )
         }

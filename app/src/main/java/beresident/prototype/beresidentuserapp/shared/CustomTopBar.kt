@@ -20,7 +20,7 @@ import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 
 @Composable
-fun HeaderTitle(text: String, prevRoute: String, navController: NavController) {
+fun CustomTopBar(text: String, action: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -38,7 +38,7 @@ fun HeaderTitle(text: String, prevRoute: String, navController: NavController) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = { navController.navigate(prevRoute) },
+                onClick = action,
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(54.dp)
@@ -56,21 +56,6 @@ fun HeaderTitle(text: String, prevRoute: String, navController: NavController) {
                 color = Color.White,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold
-            )
-        }
-        IconButton(
-            onClick = { /*TODO*/ },
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(44.dp)
-                .padding(end = DefaultTheme.dimens.grid_1_5)
-        ) {
-            Icon(
-                Icons.Filled.List,
-                contentDescription = "Menu",
-                tint = Color.White,
-                modifier = Modifier
-                    .fillMaxSize()
             )
         }
     }

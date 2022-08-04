@@ -18,7 +18,9 @@ import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.R
 
 @Composable
-fun AppHeader() {
+fun AppHeader(
+    action: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,7 +46,7 @@ fun AppHeader() {
             )
         }
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = action,
             modifier = Modifier
                 .fillMaxHeight()
                 .width(54.dp)

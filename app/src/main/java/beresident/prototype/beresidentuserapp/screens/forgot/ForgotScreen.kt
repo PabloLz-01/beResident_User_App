@@ -19,7 +19,7 @@ import beresident.prototype.beresidentuserapp.ui.theme.Grey
 import beresident.prototype.beresidentuserapp.ui.theme.snackbarError
 import beresident.prototype.beresidentuserapp.shared.CustomButton
 import beresident.prototype.beresidentuserapp.shared.CustomTextField
-import beresident.prototype.beresidentuserapp.shared.HeaderTitle
+import beresident.prototype.beresidentuserapp.shared.CustomTopBar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -33,15 +33,14 @@ fun ForgotScreen(navController: NavController){
     var snackbarText: String = ""
     var snackbarColor: Color = snackbarError
 
-    Scaffold (backgroundColor = Color.White, scaffoldState = scaffoldState){
+    Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
         Column (
             modifier = Modifier
                 .padding(bottom = DefaultTheme.dimens.grid_1_5)
         ){
-            HeaderTitle(
+            CustomTopBar(
                 stringResource(R.string.recover_password),
-                prevRoute = Screen.LoginScreen.route,
-                navController
+                action = {navController.popBackStack()}
             )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,

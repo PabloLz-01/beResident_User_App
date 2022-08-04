@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import beresident.prototype.beresidentuserapp.screens.forgot.ForgotScreen
 import beresident.prototype.beresidentuserapp.screens.register.RegisterScreen
 import beresident.prototype.beresidentuserapp.screens.login.LoginScreen
+import beresident.prototype.beresidentuserapp.screens.settings.SettingsScreen
 import beresident.prototype.beresidentuserapp.screens.splash.SplashScreen
 
 
@@ -28,6 +29,9 @@ fun Navigation() {
         }
         composable(route = Screen.MainScreen.route, arguments = listOf()){
 
+        }
+        composable(route = Screen.SettingsScreen.route, arguments = listOf()){
+            SettingsScreen(navController)
         }
     }
 }

@@ -43,10 +43,12 @@ fun RegisterScreen(navController: NavController){
     val aviso = remember { mutableStateOf(false) }
     val cargos = remember { mutableStateOf(false) }
 
-    Scaffold (backgroundColor = Color.White, scaffoldState = scaffoldState){
+    Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
 
         Column {
-            HeaderTitle(stringResource(R.string.register), prevRoute = Screen.LoginScreen.route, navController)
+            CustomTopBar(stringResource(R.string.register), action = {
+                navController.popBackStack()
+            })
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -55,13 +57,13 @@ fun RegisterScreen(navController: NavController){
                     .verticalScroll(rememberScrollState())
             ) {
                 Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_2))
-                CustomTextField(name, "Nombre(s)",  bottomPadding = DefaultTheme.dimens.grid_1_5)
-                CustomTextField(lastName, "Apellido(s)", bottomPadding = DefaultTheme.dimens.grid_1_5)
-                CustomTextField(phone, stringResource(R.string.phone_number), bottomPadding = DefaultTheme.dimens.grid_1_5)
-                CustomTextField(email, stringResource(R.string.email), bottomPadding = DefaultTheme.dimens.grid_1_5)
-                CustomTextField(confirmEmail, stringResource(R.string.confirm_email), bottomPadding = DefaultTheme.dimens.grid_1_5)
-                CustomTextField(password, "Contraseña", bottomPadding = DefaultTheme.dimens.grid_1_5, password = true)
-                CustomTextField(confirmPassword, "Confirme su contraseña",  password = true, bottomPadding = DefaultTheme.dimens.grid_1)
+                CustomTextField(name, "Nombre(s)",  bottomPadding = DefaultTheme.dimens.grid_2)
+                CustomTextField(lastName, "Apellido(s)", bottomPadding = DefaultTheme.dimens.grid_2)
+                CustomTextField(phone, stringResource(R.string.phone_number), bottomPadding = DefaultTheme.dimens.grid_2)
+                CustomTextField(email, stringResource(R.string.email), bottomPadding = DefaultTheme.dimens.grid_2)
+                CustomTextField(confirmEmail, stringResource(R.string.confirm_email), bottomPadding = DefaultTheme.dimens.grid_2)
+                CustomTextField(password, "Contraseña", bottomPadding = DefaultTheme.dimens.grid_2, password = true)
+                CustomTextField(confirmPassword, "Confirme su contraseña",  password = true, bottomPadding = DefaultTheme.dimens.grid_1_5)
                 CheckBox(checkbox, stringResource(R.string.checkbox_terms),
                     action = {
                         checkbox.isCheck = !checkbox.isCheck
@@ -72,7 +74,7 @@ fun RegisterScreen(navController: NavController){
                         }
                     })
                 Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_2))
-                CustomButton(stringResource(R.string.login), action = {
+                CustomButton(stringResource(R.string.create_account), action = {
                     if (name.text == "" || lastName.text == "") {
                         snackbarText = "Por favor rellene todos los campos"
                         snackbarColor = snackbarError
