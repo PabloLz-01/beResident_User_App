@@ -84,6 +84,7 @@ fun LoginScreen(navController: NavController){
                 CustomButton(stringResource(R.string.login), action = {
                     if (emailState.text == "" || passwordState.text == "") {
                         snackbarText = "Por favor rellene todos los campos"
+                        println("adsddsadsa")
                         snackbarColor = snackbarError
                     } else if (passwordState.text.length <= 5 ) {
                         snackbarText = "La contraseña no es valida"

@@ -9,7 +9,7 @@
         android:drawable="@drawable/ic_beresident"
         android:height="60dp"
         android:width="240dp"
-        android:bottom="60dp"
+        android:bottom="23dp"
         android:gravity="center">
     </item>
 

@@ -10,6 +10,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
@@ -82,3 +85,16 @@ object DefaultTheme {
 val Dimens : Dimensions
     @Composable
     get() = DefaultTheme.dimens
+
+class ThemeViewModel: ViewModel() {
+    private val _theme = MutableLiveData("Auto")
+    val theme: LiveData<String> = _theme
+
+    fun onThemeChange(newTheme: String) {
+        when (newTheme) {
+            "Auto" -> _theme.value = "Light"
+            "Light" -> _theme.value = "Dark"
+            "Dark" -> _theme.value = "Auto"
+        }
+    }
+}

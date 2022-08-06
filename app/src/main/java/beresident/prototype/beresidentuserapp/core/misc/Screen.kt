@@ -1,6 +1,5 @@
 package beresident.prototype.beresidentuserapp.core.misc
 
-
 sealed class Screen(val route: String) {
 
     object SplashScreen: Screen("splash_screen")
@@ -9,6 +8,7 @@ sealed class Screen(val route: String) {
     object RegisterScreen: Screen("register_screen")
     object ForgotScreen: Screen("forgot_screen")
     object SettingsScreen: Screen("settings_screen")
+    object Prueba: Screen("prueba_screen")
 
     fun withArgs(vararg args: String): String {
         return buildString {

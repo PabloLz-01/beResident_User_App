@@ -9,13 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import beresident.prototype.beresidentuserapp.R
-import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 
 @Composable
-fun SplashView() {
+fun NoInternetScreen (){
     Scaffold (backgroundColor = MaterialTheme.colors.primary,){
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             Box(
@@ -24,8 +22,8 @@ fun SplashView() {
                     .background(color = MaterialTheme.colors.primary)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_beresident),
-                    contentDescription = "Login beResident",
+                    painter = painterResource(id = R.drawable.ic_wifi_off_fill0_wght400_grad0_opsz48),
+                    contentDescription = "wifi connection",
                     modifier = Modifier
                         .align(Alignment.Center)
                         .height(62.dp)
