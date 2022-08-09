@@ -12,7 +12,7 @@ fun TerminosCondiciones(showDialog : Boolean, dismissDialog : () -> Unit) {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { dismissDialog() },
-            title = { Text(text = "Cargos Periodicos", color = Color.Black) },
+            title = { Text(text = "Terminos y Condiciones", color = Color.Black) },
             text = { Text(textoMuerto, color = Color.Black) },
             confirmButton = {},
             dismissButton = {
@@ -56,7 +56,7 @@ fun CargosPeriodicos(showDialog : Boolean, dismissDialog : () -> Unit) {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { dismissDialog() },
-            title = { Text(text = "Terminos y Condiciones", color = Color.Black) },
+            title = { Text(text = "Aviso de Cargos Periodicos", color = Color.Black) },
             text = { Text(textoMuerto, color = Color.Black) },
             confirmButton = {},
             dismissButton = {

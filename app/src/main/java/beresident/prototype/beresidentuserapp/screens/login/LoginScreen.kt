@@ -1,6 +1,7 @@
 package beresident.prototype.beresidentuserapp.screens.login
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -61,24 +62,23 @@ fun LoginScreen(navController: NavController){
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = DefaultTheme.dimens.grid_1_5),
+                        .padding(bottom = DefaultTheme.dimens.grid_1_5, top = DefaultTheme.dimens.grid_1),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     CheckBox(checkbox, stringResource(R.string.remember_me), action = {
                         checkbox.isCheck = !checkbox.isCheck
                     })
-                    TextButton(
-                        modifier = Modifier
-                            .background(Color.Transparent),
-                        onClick = {navController.navigate(Screen.ForgotScreen.route)},
-                    ) {
-                        Text(
-                            stringResource(R.string.forgot_password),
-                            fontSize = 11.sp,
-                            color = MaterialTheme.colors.secondary
-                        )
-                    }
+                    Text(
+                        stringResource(R.string.forgot_password),
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colors.secondary,
+                        modifier = Modifier.clickable{
+                            coroutineScope.launch {
+                                navController.navigate(Screen.ForgotScreen.route)
+                            }
+                        }
+                    )
                 }
                 Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_3))
                 CustomButton(stringResource(R.string.login), action = {

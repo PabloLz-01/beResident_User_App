@@ -1,6 +1,7 @@
 package beresident.prototype.beresidentuserapp.core.misc
 
 import android.content.Context
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey

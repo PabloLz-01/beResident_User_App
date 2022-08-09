@@ -26,8 +26,11 @@ class SettingsRow: ComponentActivity() {
 fun SettingsRow(
     switch: SettingsRow = remember{SettingsRow()},
     text: String,
-    hasOptions: Boolean? = true,
-    context: Context = LocalContext.current
+    hasOptions: Boolean = true,
+    isButton: Boolean = false,
+    isDropdown: Boolean = false,
+    context: Context = LocalContext.current,
+    action: () -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
     val dataStore = StoreTheme(context)
@@ -41,39 +44,42 @@ fun SettingsRow(
             text = text,
             color = Grey,
             fontSize = 12.sp,
+            modifier = Modifier.clickable(onClick = action)
         )
-        if (hasOptions == true) {
-            Box(
-                modifier = Modifier
-                    .height(16.dp)
-                    .width(600.dp),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Icon(
-                    Icons.Outlined.ArrowForward,
-                    contentDescription = "account",
-                    tint = Grey
-                )
-            }
-        } else {
-            Box(
-                modifier = Modifier
-                    .height(16.dp)
-                    .width(600.dp),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Switch(
-                    checked = switch.value,
-                    onCheckedChange = {
-                        switch.value = it
-                        scope.launch {
-                            dataStore.saveTheme(switch.value)
-                        }},
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colors.secondary,
-                        checkedTrackColor = MaterialTheme.colors.secondary
+        if (!isButton || isDropdown) {
+            if (hasOptions) {
+                Box(
+                    modifier = Modifier
+                        .height(16.dp)
+                        .width(600.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Icon(
+                        Icons.Outlined.ArrowForward,
+                        contentDescription = "next",
+                        tint = Grey
                     )
-                )
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .height(16.dp)
+                        .width(600.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Switch(
+                        checked = switch.value,
+                        onCheckedChange = {
+                            switch.value = it
+                            scope.launch {
+                                dataStore.saveTheme(switch.value)
+                            }},
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colors.secondary,
+                            checkedTrackColor = MaterialTheme.colors.secondary
+                        )
+                    )
+                }
             }
         }
     }
