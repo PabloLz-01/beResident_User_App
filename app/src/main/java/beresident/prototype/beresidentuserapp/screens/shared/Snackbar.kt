@@ -1,4 +1,4 @@
-package beresident.prototype.beresidentuserapp.shared
+package beresident.prototype.beresidentuserapp.screens.shared
 
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
