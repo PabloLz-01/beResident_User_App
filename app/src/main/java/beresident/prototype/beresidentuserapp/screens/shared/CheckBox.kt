@@ -1,4 +1,4 @@
-package beresident.prototype.beresidentuserapp.shared
+package beresident.prototype.beresidentuserapp.screens.shared
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -16,7 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
-import beresident.prototype.beresidentuserapp.ui.theme.LightGrey
 
 class CustomCheckbox {
     var isCheck: Boolean by mutableStateOf(false)

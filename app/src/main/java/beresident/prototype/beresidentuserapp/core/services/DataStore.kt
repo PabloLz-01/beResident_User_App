@@ -11,10 +11,7 @@ import kotlinx.coroutines.flow.map
 
 class StoreTheme(private val context: Context) {
 
-    //THEME
-    //1. Auto
-    //2. Light mode
-    //3. Dark mode
+    //THEME //1. Auto //2. Light mode //3. Dark mode
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("userEmail")
         val THEME = intPreferencesKey("theme")
@@ -29,22 +26,4 @@ class StoreTheme(private val context: Context) {
             preferences[THEME] = isDarkTheme
         }
     }
-
-
-
-    /*companion object {
-        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("userEmail")
-        val THEME = booleanPreferencesKey("theme")
-    }
-
-    val getTheme: Flow<Boolean?> = context.dataStore.data.map { preferences ->
-        preferences[THEME] ?: null
-    }
-
-    suspend fun saveTheme(isDarkTheme: Boolean){
-        context.dataStore.edit { preferences ->
-            preferences[THEME] = isDarkTheme
-        }
-    }*/
-
 }

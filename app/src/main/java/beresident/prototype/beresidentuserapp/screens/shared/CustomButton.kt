@@ -1,4 +1,4 @@
-package beresident.prototype.beresidentuserapp.shared
+package beresident.prototype.beresidentuserapp.screens.shared
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

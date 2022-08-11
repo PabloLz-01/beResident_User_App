@@ -16,7 +16,7 @@ import beresident.prototype.beresidentuserapp.screens.register.widgets.AvisoPriv
 import beresident.prototype.beresidentuserapp.screens.register.widgets.CargosPeriodicos
 import beresident.prototype.beresidentuserapp.screens.register.widgets.DarkModeRow
 import beresident.prototype.beresidentuserapp.screens.register.widgets.TerminosCondiciones
-import beresident.prototype.beresidentuserapp.shared.CustomTopBar
+import beresident.prototype.beresidentuserapp.screens.shared.CustomTopBar
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 
 @Composable

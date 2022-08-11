@@ -11,8 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
-import beresident.prototype.beresidentuserapp.core.misc.Screen
-import beresident.prototype.beresidentuserapp.shared.*
+import beresident.prototype.beresidentuserapp.screens.shared.*
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.snackbarError
 import beresident.prototype.beresidentuserapp.screens.register.widgets.AvisoPrivacidad

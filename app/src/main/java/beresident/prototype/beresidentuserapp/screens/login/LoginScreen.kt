@@ -1,6 +1,5 @@
 package beresident.prototype.beresidentuserapp.screens.login
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -16,10 +15,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.misc.Screen
-import beresident.prototype.beresidentuserapp.shared.CheckBox
-import beresident.prototype.beresidentuserapp.shared.CustomButton
-import beresident.prototype.beresidentuserapp.shared.CustomCheckbox
-import beresident.prototype.beresidentuserapp.shared.CustomTextField
+import beresident.prototype.beresidentuserapp.screens.shared.CheckBox
+import beresident.prototype.beresidentuserapp.screens.shared.CustomButton
+import beresident.prototype.beresidentuserapp.screens.shared.CustomCheckbox
+import beresident.prototype.beresidentuserapp.screens.shared.CustomTextField
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 import beresident.prototype.beresidentuserapp.ui.theme.snackbarError
@@ -120,7 +119,7 @@ fun LoginScreen(navController: NavController){
                 .fillMaxSize()
                 .padding(DefaultTheme.dimens.grid_2)){
             Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                beresident.prototype.beresidentuserapp.shared.SnackbarHost(
+                beresident.prototype.beresidentuserapp.screens.shared.SnackbarHost(
                     snackbarHostState,
                     snackbarColor
                 )
