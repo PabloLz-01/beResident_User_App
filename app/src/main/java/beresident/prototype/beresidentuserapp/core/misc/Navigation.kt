@@ -7,7 +7,6 @@ import androidx.navigation.compose.rememberNavController
 import beresident.prototype.beresidentuserapp.screens.forgot.ForgotScreen
 import beresident.prototype.beresidentuserapp.screens.register.RegisterScreen
 import beresident.prototype.beresidentuserapp.screens.login.LoginScreen
-import beresident.prototype.beresidentuserapp.screens.prueba.Prueba
 import beresident.prototype.beresidentuserapp.screens.settings.SettingsScreen
 import beresident.prototype.beresidentuserapp.screens.splash.SplashScreen
 import beresident.prototype.beresidentuserapp.screens.splash.widgets.NoInternetScreen
@@ -33,9 +32,6 @@ fun Navigation() {
         }
         composable(route = Screen.SettingsScreen.route, arguments = listOf()){
             SettingsScreen(navController)
-        }
-        composable(route = Screen.Prueba.route, arguments = listOf()){
-            Prueba(navController)
         }
         composable(route = Screen.NoInternet.route, arguments = listOf()){
             NoInternetScreen(navController)

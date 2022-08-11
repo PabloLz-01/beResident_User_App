@@ -32,6 +32,7 @@ fun ForgotScreen(navController: NavController){
 
     var snackbarText: String = ""
     var snackbarColor: Color = snackbarError
+    var showSnackbar = true
 
     Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
         Column (
@@ -64,8 +65,15 @@ fun ForgotScreen(navController: NavController){
                         snackbarText = "Por favor rellene todos los campos"
                         snackbarColor = snackbarError
                     }
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
+                    if (showSnackbar){
+                        showSnackbar = false
+                        coroutineScope.launch {
+                            var snackbarResult = snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
+                            when (snackbarResult){
+                                SnackbarResult.Dismissed -> showSnackbar = true
+                                SnackbarResult.ActionPerformed -> showSnackbar = true
+                            }
+                        }
                     }
                 })
             }

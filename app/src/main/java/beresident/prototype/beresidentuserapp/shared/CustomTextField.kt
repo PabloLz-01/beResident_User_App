@@ -61,38 +61,6 @@ fun CustomTextField(
             fontSize = 13.sp,
             fontWeight = FontWeight.Bold
         )
-        /*TextField(
-            value = values.text,
-            onValueChange = {values.text = it},
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            textStyle = TextStyle(color = Grey, fontSize = 12.sp, lineHeight = 10.sp),
-            keyboardOptions =
-            if (password) KeyboardOptions(keyboardType = KeyboardType.Password)
-            else KeyboardOptions(keyboardType = KeyboardType.Text),
-            visualTransformation =
-            if (hidden) PasswordVisualTransformation()
-            else VisualTransformation.None,
-            trailingIcon = {
-                if (password) {
-                    Box (modifier = Modifier.padding(all = DefaultTheme.dimens.grid_0_5).height(24.dp)) {
-                        IconButton(onClick = { hidden = !hidden }) {
-                            val vector = painterResource(//5
-                                if (hidden) R.drawable.ic_visibility_fill0_wght400_grad0_opsz48
-                                else R.drawable.ic_visibility_off_fill0_wght400_grad0_opsz48
-                            )
-                            val description = if (hidden) "Ocultar contraseña" else "Revelar contraseña" //6
-                            Icon(painter = vector, contentDescription = description, tint = Grey)
-                        }
-                    }
-                } else null
-            },
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MaterialTheme.colors.surface,
-                focusedIndicatorColor = MaterialTheme.colors.secondary,
-                cursorColor = Color.Transparent
-            )
-        )*/
         BasicTextField(
             value = values.text,
             onValueChange = {values.text = it},

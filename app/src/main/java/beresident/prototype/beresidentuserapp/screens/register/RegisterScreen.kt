@@ -1,6 +1,5 @@
 package beresident.prototype.beresidentuserapp.screens.register
 
-
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -36,12 +35,14 @@ fun RegisterScreen(navController: NavController){
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = SnackbarHostState()
 
-    var snackbarText: String
+    var snackbarText: String = ""
     var snackbarColor: Color = snackbarError
+    var showSnackbar = true
 
     val terminos = remember { mutableStateOf(false) }
     val aviso = remember { mutableStateOf(false) }
     val cargos = remember { mutableStateOf(false) }
+
 
     Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
 
@@ -59,7 +60,7 @@ fun RegisterScreen(navController: NavController){
                 Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_2))
                 CustomTextField(name, "Nombre(s)",  bottomPadding = DefaultTheme.dimens.grid_2)
                 CustomTextField(lastName, "Apellido(s)", bottomPadding = DefaultTheme.dimens.grid_2)
-                CustomTextField(phone, stringResource(R.string.phone_number), bottomPadding = DefaultTheme.dimens.grid_2)
+                CustomPhoneField(phone, stringResource(R.string.phone_number), bottomPadding = DefaultTheme.dimens.grid_2)
                 CustomTextField(email, stringResource(R.string.email), bottomPadding = DefaultTheme.dimens.grid_2)
                 CustomTextField(confirmEmail, stringResource(R.string.confirm_email), bottomPadding = DefaultTheme.dimens.grid_2)
                 CustomTextField(password, "Contraseña", bottomPadding = DefaultTheme.dimens.grid_2, password = true)
@@ -81,13 +82,16 @@ fun RegisterScreen(navController: NavController){
                     } else if (password.text.length <= 5 ) {
                         snackbarText = "La contraseña no es valida"
                         snackbarColor = snackbarError
-                    } else {
-                        snackbarText = "Iniciando sesion..."
-                        snackbarColor = Color.Green
                     }
-
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
+                    if (showSnackbar){
+                        showSnackbar = false
+                        coroutineScope.launch {
+                            var snackbarResult = snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
+                            when (snackbarResult){
+                                SnackbarResult.Dismissed -> showSnackbar = true
+                                SnackbarResult.ActionPerformed -> showSnackbar = true
+                            }
+                        }
                     }
                 })
                 Spacer(modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_2))

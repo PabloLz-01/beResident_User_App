@@ -8,7 +8,6 @@ sealed class Screen(val route: String) {
     object RegisterScreen: Screen("register_screen")
     object ForgotScreen: Screen("forgot_screen")
     object SettingsScreen: Screen("settings_screen")
-    object Prueba: Screen("prueba_screen")
     object NoInternet: Screen("no-internet-screen")
 
     fun withArgs(vararg args: String): String {

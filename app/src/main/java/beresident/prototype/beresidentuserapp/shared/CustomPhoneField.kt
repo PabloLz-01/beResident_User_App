@@ -28,13 +28,14 @@ import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 import beresident.prototype.beresidentuserapp.ui.theme.LightGrey
 
-class CustomTextField () {
+class CustomPhoneField () {
     var text: String by mutableStateOf("")
     var isFocused: Boolean by mutableStateOf(false)
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CustomTextField(
+fun CustomPhoneField(
     values: CustomTextField = remember { CustomTextField() },
     label: String = "",
     password: Boolean? = null,
@@ -42,13 +43,12 @@ fun CustomTextField(
     bottomPadding: Dp? = null,
 ) {
     //Properties
-    val password = password ?: false
     val textPadding = textPadding ?: DefaultTheme.dimens.grid_0_5
     val bottomPadding = bottomPadding ?: 0.dp
 
-    var seePassword = password
-    var hidden by remember { mutableStateOf(seePassword)}
-    var focusRequester = FocusRequester
+    val options = listOf("+52", "+1")
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(options[0]) }
 
     Column(modifier = Modifier.padding(bottom = bottomPadding)) {
         Text(
@@ -61,76 +61,64 @@ fun CustomTextField(
             fontSize = 13.sp,
             fontWeight = FontWeight.Bold
         )
-        /*TextField(
-            value = values.text,
-            onValueChange = {values.text = it},
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            textStyle = TextStyle(color = Grey, fontSize = 12.sp, lineHeight = 10.sp),
-            keyboardOptions =
-            if (password) KeyboardOptions(keyboardType = KeyboardType.Password)
-            else KeyboardOptions(keyboardType = KeyboardType.Text),
-            visualTransformation =
-            if (hidden) PasswordVisualTransformation()
-            else VisualTransformation.None,
-            trailingIcon = {
-                if (password) {
-                    Box (modifier = Modifier.padding(all = DefaultTheme.dimens.grid_0_5).height(24.dp)) {
-                        IconButton(onClick = { hidden = !hidden }) {
-                            val vector = painterResource(//5
-                                if (hidden) R.drawable.ic_visibility_fill0_wght400_grad0_opsz48
-                                else R.drawable.ic_visibility_off_fill0_wght400_grad0_opsz48
-                            )
-                            val description = if (hidden) "Ocultar contraseña" else "Revelar contraseña" //6
-                            Icon(painter = vector, contentDescription = description, tint = Grey)
-                        }
+        Row() {
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = {
+                    expanded = !expanded
+                }
+            ) {
+                TextField(
+                    readOnly = true,
+                    value = selectedOptionText,
+                    onValueChange = { },
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier.width(100.dp),
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded,) },
+                    colors = TextFieldDefaults.textFieldColors(
+                        trailingIconColor = Grey,
+                        focusedIndicatorColor = Color.Transparent,
+                        backgroundColor = MaterialTheme.colors.surface,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    textStyle = TextStyle(color = Grey, fontSize = 12.sp),
+                )
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = {
+                        expanded = false
                     }
-                } else null
-            },
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MaterialTheme.colors.surface,
-                focusedIndicatorColor = MaterialTheme.colors.secondary,
-                cursorColor = Color.Transparent
-            )
-        )*/
-        BasicTextField(
-            value = values.text,
-            onValueChange = {values.text = it},
-            singleLine = true,
-            textStyle = TextStyle(color = Grey, fontSize = 12.sp, lineHeight = 10.sp),
-            keyboardOptions =
-            if (password) KeyboardOptions(keyboardType = KeyboardType.Password)
-            else KeyboardOptions(keyboardType = KeyboardType.Text),
-            visualTransformation =
-            if (hidden) PasswordVisualTransformation()
-            else VisualTransformation.None,
-            decorationBox = { innerTextField ->
-
-                Row(
-                    modifier = Modifier
-                        .background(MaterialTheme.colors.surface, RoundedCornerShape(8.dp))
-                        .padding(start = 16.dp, top = 4.dp, bottom = 4.dp)
-                        .height(DefaultTheme.dimens.grid_6)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box(Modifier.weight(1f)){
-                        innerTextField()
-                    }
-                    if (password) {
-                        Box(modifier = Modifier.padding(all = DefaultTheme.dimens.grid_0_5).height(24.dp)){
-                            IconButton(onClick = {hidden = !hidden}) {
-                                val vector = painterResource(
-                                    if (hidden) R.drawable.ic_visibility_fill0_wght400_grad0_opsz48
-                                    else R.drawable.ic_visibility_off_fill0_wght400_grad0_opsz48
-                                )
-                                val description = if (hidden) "Ocultar contraseña" else "Revelar contraseña"
-                                Icon (painter = vector, contentDescription = description, tint = Grey)
+                    options.forEach { selectionOption ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedOptionText = selectionOption
+                                expanded = false
                             }
+                        ) {
+                            Text(
+                                text = selectionOption,
+                                color = Grey
+                            )
                         }
-                    } else null
+                    }
                 }
             }
+            TextField(
+                value = values.text,
+                onValueChange = {values.text = it},
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
+                shape = RoundedCornerShape(8.dp),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                textStyle = TextStyle(color = Grey, fontSize = 12.sp),
+                colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = MaterialTheme.colors.surface,
+                focusedIndicatorColor = Color.Transparent,
+                cursorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
         )
+        }
     }
 }
