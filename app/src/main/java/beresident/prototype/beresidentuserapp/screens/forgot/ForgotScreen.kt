@@ -3,6 +3,7 @@ package beresident.prototype.beresidentuserapp.screens.forgot
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -13,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
+import beresident.prototype.beresidentuserapp.core.usecases.AuthUsecases
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 import beresident.prototype.beresidentuserapp.ui.theme.snackbarError
@@ -32,6 +34,8 @@ fun ForgotScreen(navController: NavController){
     var snackbarText: String = ""
     var snackbarColor: Color = snackbarError
     var showSnackbar = true
+
+    val response = remember { mutableStateOf("") }
 
     Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
         Column (
@@ -63,6 +67,8 @@ fun ForgotScreen(navController: NavController){
                     if (emailState.text == ""){
                         snackbarText = "Por favor rellene todos los campos"
                         snackbarColor = snackbarError
+                    } else {
+                        AuthUsecases().forgot(response, emailState.text)
                     }
                     if (showSnackbar){
                         showSnackbar = false

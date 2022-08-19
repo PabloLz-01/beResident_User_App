@@ -3,18 +3,16 @@ package beresident.prototype.beresidentuserapp.screens.splash
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.core.misc.Screen
+import beresident.prototype.beresidentuserapp.core.misc.StoreUserCredentials
 import beresident.prototype.beresidentuserapp.core.services.ConnectionState
 import beresident.prototype.beresidentuserapp.core.services.currentConnectivityState
 import beresident.prototype.beresidentuserapp.core.services.observeConnectivityAsFlow
 import beresident.prototype.beresidentuserapp.screens.splash.widgets.SplashView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 
 @ExperimentalCoroutinesApi
 @Composable
@@ -22,16 +20,25 @@ fun SplashScreen(navController: NavController){
     val connection by connectivityState()
     val isConnected = connection === ConnectionState.Available
 
-    var readPermission = false
-    var writePermission = false
-    var cameraPermission = false
+    val userStore = StoreUserCredentials(LocalContext.current)
+
+    val userEmail = userStore.getEmail.collectAsState(initial = "")
+    val userPassword = userStore.getPassword.collectAsState(initial = "")
 
     val camera = rememberLauncherForActivityResult(ActivityResultContracts.
-    RequestPermission()) { isGranted ->
+    RequestPermission()) {
         if (isConnected) {
-            navController.navigate(Screen.LoginScreen.route){
-                popUpTo(Screen.SplashScreen.route){
-                    inclusive = true
+            if (userEmail.value != "" && userPassword.value != "") {
+                navController.navigate(Screen.MainScreen.route){
+                    popUpTo(Screen.SplashScreen.route){
+                        inclusive = true
+                    }
+                }
+            }else {
+                navController.navigate(Screen.LoginScreen.route){
+                    popUpTo(Screen.SplashScreen.route){
+                        inclusive = true
+                    }
                 }
             }
         } else {
@@ -40,12 +47,12 @@ fun SplashScreen(navController: NavController){
     }
 
     val write = rememberLauncherForActivityResult(ActivityResultContracts.
-    RequestPermission()) { isGranted ->
+    RequestPermission()) {
         camera.launch(Manifest.permission.CAMERA)
     }
 
     val read = rememberLauncherForActivityResult(ActivityResultContracts.
-    RequestPermission()) { isGranted ->
+    RequestPermission()) {
         write.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
 

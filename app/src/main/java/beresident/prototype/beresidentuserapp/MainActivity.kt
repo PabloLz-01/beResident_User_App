@@ -7,6 +7,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
 import beresident.prototype.beresidentuserapp.core.misc.Navigation
 import beresident.prototype.beresidentuserapp.core.misc.StoreTheme
+import beresident.prototype.beresidentuserapp.core.misc.StoreUserCredentials
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
                 2 -> theme = true
             }
             DefaultTheme(darkTheme = theme ) {
-                Navigation()
+                Navigation(this)
             }
         }
     }

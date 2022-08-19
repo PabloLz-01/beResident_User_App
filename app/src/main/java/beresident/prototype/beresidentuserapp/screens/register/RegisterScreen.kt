@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
+import beresident.prototype.beresidentuserapp.core.usecases.AuthUsecases
 import beresident.prototype.beresidentuserapp.screens.shared.*
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.snackbarError
@@ -41,6 +42,8 @@ fun RegisterScreen(navController: NavController){
     val terminos = remember { mutableStateOf(false) }
     val aviso = remember { mutableStateOf(false) }
     val cargos = remember { mutableStateOf(false) }
+
+    val response = remember { mutableStateOf("") }
 
 
     Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
@@ -75,12 +78,24 @@ fun RegisterScreen(navController: NavController){
                     })
                 Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_2))
                 CustomButton(stringResource(R.string.create_account), action = {
-                    if (name.text == "" || lastName.text == "") {
+                    if (
+                        name.text == "" ||
+                        lastName.text == "" ||
+                        phone.text == "" ||
+                        email.text == "" ||
+                        confirmEmail.text == "" ||
+                        password.text == "" ||
+                        confirmPassword.text == ""
+                    ) {
                         snackbarText = "Por favor rellene todos los campos"
-                        snackbarColor = snackbarError
                     } else if (password.text.length <= 5 ) {
                         snackbarText = "La contraseña no es valida"
-                        snackbarColor = snackbarError
+                    } else if (password.text != confirmPassword.text){
+                        snackbarText = "Las contraseñas no son iguales"
+                    } else if (email.text != confirmEmail.text) {
+                        snackbarText = "Los correos son diferentes"
+                    } else {
+                        AuthUsecases().register(response, name.text, lastName.text, phone.text, email.text, password.text)
                     }
                     if (showSnackbar){
                         showSnackbar = false

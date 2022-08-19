@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.misc.Screen
+import beresident.prototype.beresidentuserapp.core.misc.StoreUserCredentials
+import beresident.prototype.beresidentuserapp.core.model.RegisterModel
 import beresident.prototype.beresidentuserapp.core.model.UserModel
 import beresident.prototype.beresidentuserapp.screens.shared.CheckBox
 import beresident.prototype.beresidentuserapp.screens.shared.CustomButton
@@ -27,16 +29,18 @@ import beresident.prototype.beresidentuserapp.ui.theme.snackbarError
 import beresident.prototype.beresidentuserapp.screens.login.widgets.AppHeader
 import beresident.prototype.beresidentuserapp.screens.login.widgets.Division
 import beresident.prototype.beresidentuserapp.screens.login.widgets.LoginHeader
-import beresident.prototype.beresidentuserapp.usecases.ApiService
+import beresident.prototype.beresidentuserapp.core.services.ApiService
+import beresident.prototype.beresidentuserapp.core.usecases.AuthUsecases
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
 @Composable
-fun LoginScreen(navController: NavController){
+fun LoginScreen(navController: NavController) {
     val emailState = remember { CustomTextField() }
     val passwordState = remember { CustomTextField() }
     var checkbox =  remember { CustomCheckbox() }
@@ -46,11 +50,14 @@ fun LoginScreen(navController: NavController){
     val snackbarHostState = SnackbarHostState()
     var showSnackbar = true
 
-    var snackbarText: String
+    var snackbarText: String = ""
     var snackbarColor: Color = snackbarError
 
     var context = LocalContext.current
     val response = remember { mutableStateOf("") }
+    val userStore = StoreUserCredentials(context)
+
+    val auth = AuthUsecases()
 
     Scaffold (
         backgroundColor = MaterialTheme.colors.primaryVariant,
@@ -94,28 +101,34 @@ fun LoginScreen(navController: NavController){
                     )
                 }
                 Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_3))
-                Button(onClick = {
-                    coroutineScope.launch {
-                        //postUser(context, response)
-                        getUser(context, response)
-                        println("asdasds")
-                    }
-
-                }) {
-                    Text("asdasd")
-                }
                 CustomButton(stringResource(R.string.login), action = {
                     if (emailState.text == "" || passwordState.text == "") {
                         snackbarText = "Por favor rellene todos los campos"
-                        println("adsddsadsa")
-                        snackbarColor = snackbarError
                     } else if (passwordState.text.length <= 5 ) {
                         snackbarText = "La contraseña no es valida"
-                        snackbarColor = snackbarError
                     } else {
-                        snackbarText = "Iniciando sesion..."
-                        snackbarColor = Color.Green
-                        navController.navigate(Screen.MainScreen.route)
+                        auth.login(response, emailState.text, passwordState.text)
+                        showSnackbar = false
+                        coroutineScope.launch {
+                            delay(1000)
+                            when (auth.result) {
+                                is String -> {
+
+                                    if (checkbox.isCheck) {
+                                        coroutineScope.launch {
+                                            userStore.saveEmail(emailState.text)
+                                            userStore.savePassword(passwordState.text)
+                                        }
+                                    }
+                                    AuthUsecases().login(response, emailState.text, passwordState.text)
+                                    navController.navigate(Screen.MainScreen.route)
+                                }
+                                else -> {
+                                    snackbarText = "Error"
+                                    showSnackbar = true
+                                }
+                            }
+                        }
                     }
                     if (showSnackbar){
                         showSnackbar = false
@@ -151,78 +164,3 @@ fun LoginScreen(navController: NavController){
         }
     }
 }
-
-private suspend fun getUser(
-    context: Context,
-    result: MutableState<String>,
-) {
-    var url = "http://192.168.11.117:2400"
-    val retrofit = Retrofit.Builder()
-        .baseUrl(url)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    val apiService = retrofit.create(ApiService::class.java)
-    val user = UserModel("test4@gmail.com", "wer123")
-
-    val call: Call<UserModel> = apiService.login(user)
-
-    call!!.enqueue(object : Callback<UserModel> {
-        override fun onResponse(
-            call: Call<UserModel>,
-            response: Response<UserModel>
-        ) {
-            // on below line we are checking if response is successful.
-            if (response.isSuccessful) {
-                // on below line we are creating a new list
-                var users: UserModel
-
-                // on below line we are passing
-                // our response to our list
-                users = response.body()!!
-                println(users)
-
-                // on below line we are passing
-                // data from lst to course list.
-            }
-        }
-
-        override fun onFailure(call: Call<UserModel>, t: Throwable) {
-            // displaying an error message in toast
-            Toast.makeText(context, "Fail to get the data..", Toast.LENGTH_SHORT)
-                .show()
-        }
-    })
-}
-
-
-
-private fun postUser(
-    context: Context,
-    result: MutableState<String>,
-) {
-    var url = "http://192.168.11.117:2400"
-    val retrofit = Retrofit.Builder()
-        .baseUrl(url)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    val apiService = retrofit.create(ApiService::class.java)
-    val user = UserModel("test3@gmail.com", "wer123")
-    val call: Call<UserModel> = apiService.register(user)
-
-    call.enqueue(object: Callback<UserModel> {
-        override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
-            Toast.makeText(context, "Data posted to Api", Toast.LENGTH_SHORT).show()
-            val model: UserModel? = response.body()
-            val resp = "Response Code : " + response.code() + "\n" + "User Name : " + model!!.email + "\n" + "Job : " + model!!.password
-            result.value = resp
-            println(resp)
-        }
-
-        override fun onFailure(call: Call<UserModel>, t: Throwable) {
-            result.value = "Error found in: " + t.message
-        }
-    })
-}
-

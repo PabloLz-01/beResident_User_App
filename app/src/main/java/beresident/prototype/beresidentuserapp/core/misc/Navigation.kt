@@ -1,6 +1,8 @@
 package beresident.prototype.beresidentuserapp.core.misc
 
+import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -12,9 +14,10 @@ import beresident.prototype.beresidentuserapp.screens.splash.SplashScreen
 import beresident.prototype.beresidentuserapp.screens.splash.widgets.NoInternetScreen
 
 @Composable
-fun Navigation() {
+fun Navigation(context: Context) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.SplashScreen.route){
+    NavHost(navController = navController, startDestination = Screen.SplashScreen.route
+    ){
         composable(route = Screen.SplashScreen.route){
             SplashScreen(navController)
         }
