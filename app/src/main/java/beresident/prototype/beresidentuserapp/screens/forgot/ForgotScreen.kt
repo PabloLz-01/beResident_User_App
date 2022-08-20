@@ -90,7 +90,6 @@ fun ForgotScreen(navController: NavController){
             Box(modifier = Modifier.align(Alignment.BottomCenter)) {
                 beresident.prototype.beresidentuserapp.screens.shared.SnackbarHost(
                     snackbarHostState,
-                    snackbarColor
                 )
             }
         }

@@ -125,7 +125,7 @@ fun RegisterScreen(navController: NavController){
                 .fillMaxSize()
                 .padding(DefaultTheme.dimens.grid_2)){
             Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                SnackbarHost(snackbarHostState, snackbarColor)
+                SnackbarHost(snackbarHostState)
             }
         }
     }

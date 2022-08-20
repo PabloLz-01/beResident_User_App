@@ -6,14 +6,15 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import beresident.prototype.beresidentuserapp.ui.theme.snackbarError
 
 @Composable
-fun SnackbarHost(snackbarHostState: SnackbarHostState, color: Color){
+fun SnackbarHost(snackbarHostState: SnackbarHostState){
     SnackbarHost(
         hostState = snackbarHostState,
     ){
         Snackbar (
-            backgroundColor = color,
+            backgroundColor = snackbarError,
 
             action = {
                 IconButton(onClick = {snackbarHostState.currentSnackbarData?.dismiss()}) {

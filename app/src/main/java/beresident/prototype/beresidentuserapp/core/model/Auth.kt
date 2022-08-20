@@ -1,6 +1,13 @@
 package beresident.prototype.beresidentuserapp.core.model
 
+import beresident.prototype.beresidentuserapp.core.services.AuthenticationService
 import com.google.gson.annotations.SerializedName
+import javax.inject.Inject
+
+class Authentication @Inject constructor(private val authenticationService: AuthenticationService) {
+    suspend fun invoke(email: String, password: String): Any = authenticationService
+        .authenticate(email, password)
+}
 
 data class UserModel(
     @SerializedName("email") val email: String,
@@ -26,4 +33,3 @@ data class ForgotModel(
 data class URLModel(
     @SerializedName("url") val url: String
 )
-
