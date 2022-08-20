@@ -1,7 +1,8 @@
 package beresident.prototype.beresidentuserapp.screens.login
 
 import android.content.Context
-import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -13,12 +14,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.misc.Screen
 import beresident.prototype.beresidentuserapp.core.misc.StoreUserCredentials
-import beresident.prototype.beresidentuserapp.core.model.RegisterModel
-import beresident.prototype.beresidentuserapp.core.model.UserModel
 import beresident.prototype.beresidentuserapp.screens.shared.CheckBox
 import beresident.prototype.beresidentuserapp.screens.shared.CustomButton
 import beresident.prototype.beresidentuserapp.screens.shared.CustomCheckbox
@@ -29,15 +29,8 @@ import beresident.prototype.beresidentuserapp.ui.theme.snackbarError
 import beresident.prototype.beresidentuserapp.screens.login.widgets.AppHeader
 import beresident.prototype.beresidentuserapp.screens.login.widgets.Division
 import beresident.prototype.beresidentuserapp.screens.login.widgets.LoginHeader
-import beresident.prototype.beresidentuserapp.core.services.ApiService
 import beresident.prototype.beresidentuserapp.core.usecases.AuthUsecases
 import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Inject
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -50,8 +43,7 @@ fun LoginScreen(navController: NavController) {
     val snackbarHostState = SnackbarHostState()
     var showSnackbar = true
 
-    var snackbarText: String = ""
-    var snackbarColor: Color = snackbarError
+    var snackbarText: String = "La cuenta no existe"
 
     var context = LocalContext.current
     val response = remember { mutableStateOf("") }
@@ -108,12 +100,11 @@ fun LoginScreen(navController: NavController) {
                         snackbarText = "La contraseña no es valida"
                     } else {
                         auth.login(response, emailState.text, passwordState.text)
-                        showSnackbar = false
                         coroutineScope.launch {
                             delay(1000)
                             when (auth.result) {
                                 is String -> {
-
+                                    showSnackbar = false
                                     if (checkbox.isCheck) {
                                         coroutineScope.launch {
                                             userStore.saveEmail(emailState.text)
@@ -124,8 +115,7 @@ fun LoginScreen(navController: NavController) {
                                     navController.navigate(Screen.MainScreen.route)
                                 }
                                 else -> {
-                                    snackbarText = "Error"
-                                    showSnackbar = true
+                                    snackbarText = "La cuenta no existe"
                                 }
                             }
                         }
@@ -158,9 +148,38 @@ fun LoginScreen(navController: NavController) {
             Box(modifier = Modifier.align(Alignment.BottomCenter)) {
                 beresident.prototype.beresidentuserapp.screens.shared.SnackbarHost(
                     snackbarHostState,
-                    snackbarColor
                 )
             }
         }
     }
 }
+
+/*CustomButton(stringResource(R.string.login), action = {
+    if (emailState.text == "" || passwordState.text == "") {
+        snackbarText = "Por favor rellene todos los campos"
+    } else if (passwordState.text.length <= 5) {
+        snackbarText = "La contraseña no es valida"
+    } else {
+        login()
+        auth.login(response, emailState.text, passwordState.text)
+        coroutineScope.launch {
+            delay(1000)
+            when (auth.result) {
+                is String -> {
+                    showSnackbar = false
+                    if (checkbox.isCheck) {
+                        coroutineScope.launch {
+                            userStore.saveEmail(emailState.text)
+                            userStore.savePassword(passwordState.text)
+                        }
+                    }
+                    AuthUsecases().login(response, emailState.text, passwordState.text)
+                    navController.navigate(Screen.MainScreen.route)
+                }
+                else -> {
+                    snackbarText = "La cuenta no existe"
+                }
+            }
+        }
+    }
+}*/
