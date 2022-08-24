@@ -1,5 +1,6 @@
 package beresident.prototype.beresidentuserapp.core.services
 
+import androidx.compose.runtime.MutableState
 import beresident.prototype.beresidentuserapp.core.model.LoginModel
 import beresident.prototype.beresidentuserapp.core.model.UserModel
 import kotlinx.coroutines.Dispatchers
@@ -16,20 +17,10 @@ class AuthenticationService @Inject constructor(private val apiService: ApiServi
         return withContext(Dispatchers.IO){
             val call: Call<LoginModel> = apiService.login(UserModel(email, password))
 
-            call.enqueue(object: Callback<LoginModel> {
-                override fun onResponse(call: Call<LoginModel>, response: Response<LoginModel>) {
-                    result = if (response.code() == 200) {
-                        val model: LoginModel? = response.body()
-                        model!!.token
-                    } else response.code()
-                }
+            var response = call.execute()
+            if (response.code() == 200) result = response.code()
+            else result = response.code()
 
-                override fun onFailure(call: Call<LoginModel>, t: Throwable) {
-                    result = t.message!!
-                }
-            })
-
-            result
         }
     }
 }

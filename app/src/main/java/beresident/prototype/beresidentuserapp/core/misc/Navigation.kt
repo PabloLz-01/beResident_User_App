@@ -1,20 +1,25 @@
 package beresident.prototype.beresidentuserapp.core.misc
 
 import android.content.Context
+import androidx.activity.compose.setContent
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import beresident.prototype.beresidentuserapp.screens.forgot.ForgotScreen
 import beresident.prototype.beresidentuserapp.screens.register.RegisterScreen
 import beresident.prototype.beresidentuserapp.screens.login.LoginScreen
+import beresident.prototype.beresidentuserapp.screens.login.LoginViewModel
 import beresident.prototype.beresidentuserapp.screens.settings.SettingsScreen
 import beresident.prototype.beresidentuserapp.screens.splash.SplashScreen
 import beresident.prototype.beresidentuserapp.screens.splash.widgets.NoInternetScreen
 
 @Composable
-fun Navigation(context: Context) {
+fun Navigation(context: Context, loginViewModel: LoginViewModel) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.SplashScreen.route
     ){
@@ -22,7 +27,7 @@ fun Navigation(context: Context) {
             SplashScreen(navController)
         }
         composable(route = Screen.LoginScreen.route){
-            LoginScreen(navController)
+            LoginScreen(loginViewModel).Screen(navController)
         }
         composable(route = Screen.ForgotScreen.route, arguments = listOf()){
             ForgotScreen(navController)

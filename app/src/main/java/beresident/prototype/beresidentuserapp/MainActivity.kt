@@ -15,6 +15,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val loginViewModel: LoginViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val dataStore = StoreTheme(this)
         super.onCreate(savedInstanceState)
@@ -27,7 +29,7 @@ class MainActivity : ComponentActivity() {
                 2 -> theme = true
             }
             DefaultTheme(darkTheme = theme ) {
-                Navigation(this)
+                Navigation(this, loginViewModel)
             }
         }
     }

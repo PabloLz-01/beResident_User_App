@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
+import beresident.prototype.beresidentuserapp.core.misc.Screen
 import beresident.prototype.beresidentuserapp.core.usecases.AuthUsecases
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
@@ -21,6 +22,7 @@ import beresident.prototype.beresidentuserapp.ui.theme.snackbarError
 import beresident.prototype.beresidentuserapp.screens.shared.CustomButton
 import beresident.prototype.beresidentuserapp.screens.shared.CustomTextField
 import beresident.prototype.beresidentuserapp.screens.shared.CustomTopBar
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -31,11 +33,12 @@ fun ForgotScreen(navController: NavController){
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = SnackbarHostState()
 
-    var snackbarText: String = ""
+    var snackbarText: String = "El correo no esta registrado"
     var snackbarColor: Color = snackbarError
     var showSnackbar = true
 
     val response = remember { mutableStateOf("") }
+    val auth = AuthUsecases()
 
     Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
         Column (
@@ -66,20 +69,49 @@ fun ForgotScreen(navController: NavController){
                 CustomButton(stringResource(R.string.send_verification_link), action = {
                     if (emailState.text == ""){
                         snackbarText = "Por favor rellene todos los campos"
-                        snackbarColor = snackbarError
-                    } else {
-                        AuthUsecases().forgot(response, emailState.text)
-                    }
-                    if (showSnackbar){
-                        showSnackbar = false
-                        coroutineScope.launch {
-                            var snackbarResult = snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
-                            when (snackbarResult){
-                                SnackbarResult.Dismissed -> showSnackbar = true
-                                SnackbarResult.ActionPerformed -> showSnackbar = true
+                        if (showSnackbar){
+                            showSnackbar = false
+                            coroutineScope.launch {
+                                var snackbarResult = snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
+                                when (snackbarResult){
+                                    SnackbarResult.Dismissed -> showSnackbar = true
+                                    SnackbarResult.ActionPerformed -> showSnackbar = true
+                                }
                             }
                         }
+                    } else {
+                        coroutineScope.launch {
+                            auth.forgot(emailState.text)
+                            delay(1000)
+                            println(auth.result)
+                            when (auth.result) {
+                                is String -> {
+                                    showSnackbar = false
+                                    navController.navigate(Screen.LoginScreen.route){
+                                        popUpTo(Screen.ForgotScreen.route){
+                                            inclusive = true
+                                        }
+                                    }
+                                }
+                                else -> {
+                                    snackbarText = "El correo no esta registrado"
+                                }
+                            }
+
+                            if (showSnackbar){
+                                showSnackbar = false
+                                coroutineScope.launch {
+                                    var snackbarResult = snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
+                                    when (snackbarResult){
+                                        SnackbarResult.Dismissed -> showSnackbar = true
+                                        SnackbarResult.ActionPerformed -> showSnackbar = true
+                                    }
+                                }
+                            }
+                        }
+
                     }
+
                 })
             }
         }

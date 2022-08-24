@@ -5,8 +5,11 @@ import com.google.gson.annotations.SerializedName
 import javax.inject.Inject
 
 class Authentication @Inject constructor(private val authenticationService: AuthenticationService) {
-    suspend fun invoke(email: String, password: String): Any = authenticationService
-        .authenticate(email, password)
+    suspend fun invoke(email: String, password: String): Any {
+        authenticationService.authenticate(email, password)
+        return authenticationService.result
+    }
+
 }
 
 data class UserModel(

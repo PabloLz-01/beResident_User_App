@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import beresident.prototype.beresidentuserapp.ui.theme.snackbarError
+import kotlinx.coroutines.launch
 
 @Composable
 fun SnackbarHost(snackbarHostState: SnackbarHostState){
@@ -15,7 +16,6 @@ fun SnackbarHost(snackbarHostState: SnackbarHostState){
     ){
         Snackbar (
             backgroundColor = snackbarError,
-
             action = {
                 IconButton(onClick = {snackbarHostState.currentSnackbarData?.dismiss()}) {
                     Icon(Icons.Filled.Close, contentDescription = "Dismiss", tint = Color.White)
@@ -29,5 +29,14 @@ fun SnackbarHost(snackbarHostState: SnackbarHostState){
             )
         }
     }
+}
 
+@Composable
+fun showSnackbar(text: String, snackbarHostState: SnackbarHostState){
+    LaunchedEffect("snackbar"){
+        snackbarHostState.showSnackbar(
+            message = text,
+            duration = SnackbarDuration.Short
+        )
+    }
 }

@@ -4,18 +4,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import beresident.prototype.beresidentuserapp.core.model.Authentication
+import beresident.prototype.beresidentuserapp.screens.shared.showSnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val authentication: Authentication) : ViewModel() {
+class LoginViewModel @Inject constructor(private val authentication: Authentication) : ViewModel(){
     val error = MutableLiveData<Any>()
 
     fun onCreate(email: String, password: String){
         viewModelScope.launch {
             val result: Any = authentication.invoke(email, password)
             error.postValue(handler(result as Int))
+
         }
     }
 
@@ -23,9 +25,8 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
         var message = ""
 
         when (statusCode) {
-            401, 422 -> message = "El usuario no existe"
+            401, 422, 403 -> message = "El usuario no existe"
         }
-
         return message
     }
 }

@@ -18,6 +18,7 @@ import beresident.prototype.beresidentuserapp.ui.theme.snackbarError
 import beresident.prototype.beresidentuserapp.screens.register.widgets.AvisoPrivacidad
 import beresident.prototype.beresidentuserapp.screens.register.widgets.CargosPeriodicos
 import beresident.prototype.beresidentuserapp.screens.register.widgets.TerminosCondiciones
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -44,6 +45,8 @@ fun RegisterScreen(navController: NavController){
     val cargos = remember { mutableStateOf(false) }
 
     val response = remember { mutableStateOf("") }
+
+    val auth = AuthUsecases()
 
 
     Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
@@ -95,18 +98,40 @@ fun RegisterScreen(navController: NavController){
                     } else if (email.text != confirmEmail.text) {
                         snackbarText = "Los correos son diferentes"
                     } else {
-                        AuthUsecases().register(response, name.text, lastName.text, phone.text, email.text, password.text)
-                    }
-                    if (showSnackbar){
-                        showSnackbar = false
                         coroutineScope.launch {
-                            var snackbarResult = snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
-                            when (snackbarResult){
-                                SnackbarResult.Dismissed -> showSnackbar = true
-                                SnackbarResult.ActionPerformed -> showSnackbar = true
+                            auth.register(response, name.text, lastName.text, phone.text, email.text, password.text)
+                            delay(1000)
+                            when (auth.result){
+                                is String -> {
+
+                                }
+                                else -> {
+                                    snackbarText = "Por favor revise los datos ingresados"
+                                    if (showSnackbar){
+                                        showSnackbar = false
+                                        coroutineScope.launch {
+                                            var snackbarResult = snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
+                                            when (snackbarResult){
+                                                SnackbarResult.Dismissed -> showSnackbar = true
+                                                SnackbarResult.ActionPerformed -> showSnackbar = true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (showSnackbar){
+                                showSnackbar = false
+                                coroutineScope.launch {
+                                    var snackbarResult = snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
+                                    when (snackbarResult){
+                                        SnackbarResult.Dismissed -> showSnackbar = true
+                                        SnackbarResult.ActionPerformed -> showSnackbar = true
+                                    }
+                                }
                             }
                         }
                     }
+
                 })
                 Spacer(modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_2))
             }

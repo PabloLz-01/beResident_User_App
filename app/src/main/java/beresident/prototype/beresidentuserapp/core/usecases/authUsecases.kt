@@ -20,7 +20,7 @@ class AuthUsecases(
     private val apiService: ApiService = retrofit.create(ApiService::class.java)
     var result: Any = 404
 
-    fun login(resulta: MutableState<String>, email: String, password: String){
+    fun login(email: String, password: String){
         val user = UserModel(email, password)
         val call: Call<LoginModel> = apiService.login(user)
         call.enqueue(object: Callback<LoginModel> {
@@ -70,27 +70,26 @@ class AuthUsecases(
         })
     }
 
-    fun forgot(
-        result: MutableState<String>,
-        email: String,
-    ) {
+    fun forgot(email: String, ) {
         val email = ForgotModel(email)
         val call: Call<URLModel> = apiService.forgot(email)
 
         call.enqueue(object: Callback<URLModel> {
             override fun onResponse(call: Call<URLModel>, response: Response<URLModel>) {
-                val resp = "Response Code : " + response.code() + "\n" +
-                        "URL : " + (response.body()?.url ?: "") + "\n"
-                result.value = resp
-                println(response)
+                if (response.code() == 200) {
+                    result = response.body()!!.url
+                    println(result)
+                } else {
+                    result = response.code()
+                }
+
             }
 
             override fun onFailure(call: Call<URLModel>, t: Throwable) {
-                result.value = "Error found in: " + t.message
+                result = "Error found in: " + t.message
             }
         })
     }
-
 }
 
 
