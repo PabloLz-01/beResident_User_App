@@ -1,4 +1,4 @@
-package beresident.prototype.beresidentuserapp.screens.login
+package beresident.prototype.beresidentuserapp.screens.register
 
 import androidx.compose.material.SnackbarHostState
 import androidx.lifecycle.MutableLiveData
@@ -7,23 +7,25 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.core.misc.Screen
 import beresident.prototype.beresidentuserapp.core.model.Authentication
-import beresident.prototype.beresidentuserapp.screens.shared.showSnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val authentication: Authentication) : ViewModel(){
+class RegisterViewModel @Inject constructor(private val authentication: Authentication): ViewModel() {
     val error = MutableLiveData<Any>()
 
     fun onCreate(
+        name: String,
+        lastName: String,
+        phone: String,
         email: String,
         password: String,
         snackbarHostState: SnackbarHostState,
         navController: NavController
     ){
         viewModelScope.launch {
-            val result: Any = authentication.invoke(email, password)
+            val result: Any = authentication.register(name, lastName, phone, email, password)
             error.postValue(handler(result as Int, snackbarHostState, navController))
         }
     }
@@ -32,17 +34,17 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
         statusCode: Int,
         snackbarHostState: SnackbarHostState,
         navController: NavController
-    ): String{
+    ): String {
         var message = ""
 
         when (statusCode) {
             401, 422, 403 -> {
-                message = "El usuario no existe"
+                message = "Por favor verifique los datos"
                 snackbarHostState.showSnackbar(message)
             }
             else -> {
-                navController.navigate(Screen.MainScreen.route){
-                    popUpTo(Screen.LoginScreen.route){ inclusive = true }
+                navController.navigate(Screen.LoginScreen.route){
+                    popUpTo(Screen.RegisterScreen.route){ inclusive = true }
                 }
             }
         }

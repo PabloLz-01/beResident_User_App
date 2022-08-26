@@ -10,6 +10,19 @@ class Authentication @Inject constructor(private val authenticationService: Auth
         return authenticationService.result
     }
 
+    suspend fun register(name: String, lastName: String, phone: String, email: String, password: String): Any {
+        authenticationService.register(name, lastName, phone, email, password)
+        return authenticationService.result
+    }
+
+    suspend fun forgot(email: String): Any {
+        authenticationService.forgot(email)
+        return authenticationService.result
+    }
+}
+
+class Register @Inject constructor(private val authenticationService: AuthenticationService) {
+
 }
 
 data class UserModel(

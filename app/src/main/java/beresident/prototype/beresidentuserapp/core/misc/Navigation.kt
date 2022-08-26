@@ -11,15 +11,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import beresident.prototype.beresidentuserapp.screens.forgot.ForgotScreen
+import beresident.prototype.beresidentuserapp.screens.forgot.ForgotViewModel
 import beresident.prototype.beresidentuserapp.screens.register.RegisterScreen
 import beresident.prototype.beresidentuserapp.screens.login.LoginScreen
 import beresident.prototype.beresidentuserapp.screens.login.LoginViewModel
+import beresident.prototype.beresidentuserapp.screens.register.RegisterViewModel
 import beresident.prototype.beresidentuserapp.screens.settings.SettingsScreen
 import beresident.prototype.beresidentuserapp.screens.splash.SplashScreen
 import beresident.prototype.beresidentuserapp.screens.splash.widgets.NoInternetScreen
 
 @Composable
-fun Navigation(context: Context, loginViewModel: LoginViewModel) {
+fun Navigation(
+    loginViewModel: LoginViewModel,
+    registerViewModel: RegisterViewModel,
+    forgotViewModel: ForgotViewModel
+) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.SplashScreen.route
     ){
@@ -30,10 +36,10 @@ fun Navigation(context: Context, loginViewModel: LoginViewModel) {
             LoginScreen(loginViewModel).Screen(navController)
         }
         composable(route = Screen.ForgotScreen.route, arguments = listOf()){
-            ForgotScreen(navController)
+            ForgotScreen(forgotViewModel).Screen(navController)
         }
         composable(route = Screen.RegisterScreen.route, arguments = listOf()){
-            RegisterScreen(navController)
+            RegisterScreen(registerViewModel).Screen(navController)
         }
         composable(route = Screen.MainScreen.route, arguments = listOf()){
 

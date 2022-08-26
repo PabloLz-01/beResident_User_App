@@ -1,129 +1,71 @@
 package beresident.prototype.beresidentuserapp.screens.forgot
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
-import beresident.prototype.beresidentuserapp.core.misc.Screen
-import beresident.prototype.beresidentuserapp.core.usecases.AuthUsecases
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
-import beresident.prototype.beresidentuserapp.ui.theme.snackbarError
 import beresident.prototype.beresidentuserapp.screens.shared.CustomButton
 import beresident.prototype.beresidentuserapp.screens.shared.CustomTextField
 import beresident.prototype.beresidentuserapp.screens.shared.CustomTopBar
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-@Composable
-fun ForgotScreen(navController: NavController){
-    var emailState = remember { CustomTextField() }
+class ForgotScreen (forgotViewModel: ForgotViewModel): ComponentActivity() {
+    var forgot = forgotViewModel
 
-    val scaffoldState = rememberScaffoldState()
-    val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = SnackbarHostState()
+    @Composable
+    fun Screen(navController: NavController){
+        val emailState = remember { CustomTextField() }
 
-    var snackbarText: String = "El correo no esta registrado"
-    var snackbarColor: Color = snackbarError
-    var showSnackbar = true
+        val scaffoldState = rememberScaffoldState()
+        val snackbarHostState = SnackbarHostState()
 
-    val response = remember { mutableStateOf("") }
-    val auth = AuthUsecases()
-
-    Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
-        Column (
-            modifier = Modifier
-                .padding(bottom = DefaultTheme.dimens.grid_1_5)
-        ){
-            CustomTopBar(
-                stringResource(R.string.recover_password),
-                action = {navController.popBackStack()}
-            )
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp)
-            ) {
-                Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_3_5))
-                CustomTextField(emailState, stringResource(R.string.email), bottomPadding = DefaultTheme.dimens.grid_1_5)
-                Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_1))
-                Text(
-                    stringResource(R.string.valid_email),
-                    fontSize = 12.sp,
-                    color = Grey,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(bottom = 24.dp)
+        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
+            Column (modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_1_5)){
+                CustomTopBar(
+                    stringResource(R.string.recover_password),
+                    action = {navController.popBackStack()}
                 )
-                CustomButton(stringResource(R.string.send_verification_link), action = {
-                    if (emailState.text == ""){
-                        snackbarText = "Por favor rellene todos los campos"
-                        if (showSnackbar){
-                            showSnackbar = false
-                            coroutineScope.launch {
-                                var snackbarResult = snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
-                                when (snackbarResult){
-                                    SnackbarResult.Dismissed -> showSnackbar = true
-                                    SnackbarResult.ActionPerformed -> showSnackbar = true
-                                }
-                            }
-                        }
-                    } else {
-                        coroutineScope.launch {
-                            auth.forgot(emailState.text)
-                            delay(1000)
-                            println(auth.result)
-                            when (auth.result) {
-                                is String -> {
-                                    showSnackbar = false
-                                    navController.navigate(Screen.LoginScreen.route){
-                                        popUpTo(Screen.ForgotScreen.route){
-                                            inclusive = true
-                                        }
-                                    }
-                                }
-                                else -> {
-                                    snackbarText = "El correo no esta registrado"
-                                }
-                            }
-
-                            if (showSnackbar){
-                                showSnackbar = false
-                                coroutineScope.launch {
-                                    var snackbarResult = snackbarHostState.showSnackbar(message = snackbarText, duration= SnackbarDuration.Short)
-                                    when (snackbarResult){
-                                        SnackbarResult.Dismissed -> showSnackbar = true
-                                        SnackbarResult.ActionPerformed -> showSnackbar = true
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-
-                })
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)
+                ) {
+                    Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_3_5))
+                    CustomTextField(emailState, stringResource(R.string.email), bottomPadding = DefaultTheme.dimens.grid_1_5)
+                    Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_1))
+                    Text(
+                        stringResource(R.string.valid_email),
+                        fontSize = 12.sp,
+                        color = Grey,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(bottom = 24.dp)
+                    )
+                    CustomButton(stringResource(R.string.send_verification_link), action = {
+                        forgot.onCreate(emailState.text, snackbarHostState, navController)
+                    })
+                }
             }
-        }
-        BoxWithConstraints (
-            Modifier
-                .fillMaxSize()
-                .padding(DefaultTheme.dimens.grid_2)){
-            Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                beresident.prototype.beresidentuserapp.screens.shared.SnackbarHost(
-                    snackbarHostState,
-                )
+            BoxWithConstraints (
+                Modifier
+                    .fillMaxSize()
+                    .padding(DefaultTheme.dimens.grid_2)){
+                Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                    beresident.prototype.beresidentuserapp.screens.shared.SnackbarHost(
+                        snackbarHostState,
+                    )
+                }
             }
         }
     }
 }
+
+

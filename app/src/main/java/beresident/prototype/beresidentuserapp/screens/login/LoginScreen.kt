@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.misc.Screen
@@ -26,24 +25,11 @@ class LoginScreen(loginViewModel: LoginViewModel) : ComponentActivity() {
 
     var login = loginViewModel
 
-    private suspend fun login(email: String, password: String){
-        login.onCreate(email, password)
-
-        login.error.observe(this, Observer { val error = it.toString() })
-        var errorMessage = login.error
-        showSnackbar(errorMessage.toString(),)
-    }
-
-    suspend fun showSnackbar(message: String, ){
-         val snackbarHostState = SnackbarHostState()
-         snackbarHostState.showSnackbar(message , duration= SnackbarDuration.Short)
-    }
-
     @Composable
       fun Screen(navController: NavController) {
         val emailState = remember { CustomTextField() }
         val passwordState = remember { CustomTextField() }
-        var checkbox =  remember { CustomCheckbox() }
+        val checkbox =  remember { CustomCheckbox() }
 
         val scaffoldState = rememberScaffoldState()
         val coroutineScope = rememberCoroutineScope()
@@ -91,7 +77,7 @@ class LoginScreen(loginViewModel: LoginViewModel) : ComponentActivity() {
                     Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_3))
                     CustomButton(stringResource(R.string.login), action = {
                         coroutineScope.launch {
-                            login(emailState.text, passwordState.text)
+                            login.onCreate(emailState.text, passwordState.text, snackbarHostState, navController)
                         }
                     })
                     Division()
@@ -100,7 +86,7 @@ class LoginScreen(loginViewModel: LoginViewModel) : ComponentActivity() {
                         .height(DefaultTheme.dimens.grid_7),
                         onClick = {navController.navigate(Screen.RegisterScreen.route)},
                     ) {
-                        Text(stringResource(R.string.create_an_account), color = Grey,)
+                        Text(stringResource(R.string.create_an_account), color = Grey)
                     }
                 }
             }
@@ -109,7 +95,7 @@ class LoginScreen(loginViewModel: LoginViewModel) : ComponentActivity() {
                     .fillMaxSize()
                     .padding(DefaultTheme.dimens.grid_2)){
                 Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                    beresident.prototype.beresidentuserapp.screens.shared.SnackbarHost(snackbarHostState)
+                    SnackbarHost(snackbarHostState)
                 }
             }
         }
