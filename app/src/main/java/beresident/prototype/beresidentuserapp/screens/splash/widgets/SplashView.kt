@@ -1,5 +1,6 @@
 package beresident.prototype.beresidentuserapp.screens.splash.widgets
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun SplashView() {
     Scaffold (backgroundColor = MaterialTheme.colors.primary,){

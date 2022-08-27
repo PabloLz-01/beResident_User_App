@@ -41,6 +41,7 @@ class RegisterViewModel @Inject constructor(private val authentication: Authenti
         when (statusCode) {
             401, 422, 403 -> {
                 message = "Por favor verifique los datos"
+                snackbarHostState.currentSnackbarData?.dismiss()
                 snackbarHostState.showSnackbar(message)
             }
             else -> {

@@ -1,5 +1,6 @@
 package beresident.prototype.beresidentuserapp.screens.login
 
+import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,25 +24,20 @@ import beresident.prototype.beresidentuserapp.screens.shared.*
 import kotlinx.coroutines.*
 
 class LoginScreen(loginViewModel: LoginViewModel) : ComponentActivity() {
-
     var login = loginViewModel
 
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
       fun Screen(navController: NavController) {
         val emailState = remember { CustomTextField() }
         val passwordState = remember { CustomTextField() }
         val checkbox =  remember { CustomCheckbox() }
 
-        val scaffoldState = rememberScaffoldState()
         val coroutineScope = rememberCoroutineScope()
         val snackbarHostState = SnackbarHostState()
-
         val context = LocalContext.current
 
-        Scaffold (
-            backgroundColor = MaterialTheme.colors.primaryVariant,
-            scaffoldState = scaffoldState,
-        ){
+        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant,){
             Column (modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_1_5)){
                 AppHeader(action = { navController.navigate(Screen.SettingsScreen.route) })
                 LoginHeader()
@@ -86,7 +82,7 @@ class LoginScreen(loginViewModel: LoginViewModel) : ComponentActivity() {
                                 checkbox.isCheck,
                                 context,
                                 snackbarHostState,
-                                navController
+                                navController,
                             )
                         }
                     })

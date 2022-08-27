@@ -1,5 +1,6 @@
 package beresident.prototype.beresidentuserapp.screens.forgot
 
+import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -21,6 +22,7 @@ import beresident.prototype.beresidentuserapp.screens.shared.CustomTopBar
 class ForgotScreen (forgotViewModel: ForgotViewModel): ComponentActivity() {
     var forgot = forgotViewModel
 
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
     fun Screen(navController: NavController){
         val emailState = remember { CustomTextField() }

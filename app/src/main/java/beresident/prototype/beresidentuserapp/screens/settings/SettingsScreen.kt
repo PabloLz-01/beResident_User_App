@@ -1,5 +1,6 @@
 package beresident.prototype.beresidentuserapp.screens.settings
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -19,6 +20,7 @@ import beresident.prototype.beresidentuserapp.screens.register.widgets.TerminosC
 import beresident.prototype.beresidentuserapp.screens.shared.CustomTopBar
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun SettingsScreen(navController: NavController){
     val context = LocalContext.current

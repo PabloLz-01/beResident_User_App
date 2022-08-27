@@ -1,5 +1,6 @@
 package beresident.prototype.beresidentuserapp.screens.register
 
+import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -7,7 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -17,11 +18,17 @@ import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.screens.register.widgets.AvisoPrivacidad
 import beresident.prototype.beresidentuserapp.screens.register.widgets.CargosPeriodicos
 import beresident.prototype.beresidentuserapp.screens.register.widgets.TerminosCondiciones
+import com.google.accompanist.insets.imePadding
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() {
     var register = registerViewModel
 
+
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
     fun Screen(navController: NavController){
         val name = remember { CustomTextField() }
@@ -40,8 +47,23 @@ class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() 
         val aviso = remember { mutableStateOf(false) }
         val cargos = remember { mutableStateOf(false) }
 
-        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant){
-            Column {
+        fun requestBringIntoView(focusState: FocusState, viewItem: Int){
+            if (focusState.isFocused){
+                coroutineScope.launch {
+                    delay(200)
+                }
+            }
+        }
+
+        Scaffold (
+            backgroundColor = MaterialTheme.colors.primaryVariant,
+            modifier = Modifier.padding(0.dp)
+        ){
+            Column (
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .navigationBarsPadding()
+                    ){
                 CustomTopBar(stringResource(R.string.register), action = {
                     navController.popBackStack()
                 })
@@ -51,6 +73,9 @@ class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() 
                         .fillMaxWidth()
                         .padding(horizontal = 12.dp)
                         .verticalScroll(rememberScrollState())
+                        .statusBarsPadding()
+                        .imePadding()
+                        .navigationBarsPadding()
                 ) {
                     Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_2))
                     CustomTextField(name, "Nombre(s)",  bottomPadding = DefaultTheme.dimens.grid_2)
@@ -82,6 +107,7 @@ class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() 
                             )
                         }else {
                             coroutineScope.launch {
+                                snackbarHostState.currentSnackbarData?.dismiss()
                                 snackbarHostState.showSnackbar("Debe aceptar los terminos y condiciones.")
                             }
                         }

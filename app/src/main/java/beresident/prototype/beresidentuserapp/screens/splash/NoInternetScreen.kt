@@ -1,5 +1,6 @@
 package beresident.prototype.beresidentuserapp.screens.splash.widgets
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,6 +18,7 @@ import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.misc.Screen
 import beresident.prototype.beresidentuserapp.screens.shared.CustomButton
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NoInternetScreen (navController: NavController){
     Scaffold (backgroundColor = MaterialTheme.colors.primary,){

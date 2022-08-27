@@ -28,6 +28,7 @@ class ForgotViewModel @Inject constructor(private val authentication: Authentica
         when (statusCode) {
             401, 422, 402, 404 -> {
                 message = "El correo electronico no se encuentra registrado"
+                snackbarHostState.currentSnackbarData?.dismiss()
                 snackbarHostState.showSnackbar(message)
             }
             else -> {

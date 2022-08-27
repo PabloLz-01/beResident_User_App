@@ -10,6 +10,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +29,6 @@ import beresident.prototype.beresidentuserapp.ui.theme.Grey
 
 class CustomTextField () {
     var text: String by mutableStateOf("")
-    var isFocused: Boolean by mutableStateOf(false)
 }
 
 @Composable
@@ -44,7 +46,8 @@ fun CustomTextField(
 
     var seePassword = password
     var hidden by remember { mutableStateOf(seePassword)}
-    var focusRequester = FocusRequester
+
+    val focusManager = LocalFocusManager.current
 
     Column(modifier = Modifier.padding(bottom = bottomPadding)) {
         Text(
@@ -69,7 +72,6 @@ fun CustomTextField(
             if (hidden) PasswordVisualTransformation()
             else VisualTransformation.None,
             decorationBox = { innerTextField ->
-
                 Row(
                     modifier = Modifier
                         .background(MaterialTheme.colors.surface, RoundedCornerShape(8.dp))
