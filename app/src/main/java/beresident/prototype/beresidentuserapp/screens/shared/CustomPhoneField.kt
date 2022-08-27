@@ -19,15 +19,14 @@ import beresident.prototype.beresidentuserapp.ui.theme.Grey
 
 class CustomPhoneField () {
     var text: String by mutableStateOf("")
-    var isFocused: Boolean by mutableStateOf(false)
+    var number: String by mutableStateOf("")
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CustomPhoneField(
-    values: CustomTextField = remember { CustomTextField() },
+    values: CustomPhoneField = remember { CustomPhoneField() },
     label: String = "",
-    password: Boolean? = null,
     textPadding: Dp? = null,
     bottomPadding: Dp? = null,
 ) {
@@ -60,7 +59,7 @@ fun CustomPhoneField(
                 TextField(
                     readOnly = true,
                     value = selectedOptionText,
-                    onValueChange = { },
+                    onValueChange = { values.number = selectedOptionText + values.text},
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.width(100.dp),
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded,) },
@@ -95,7 +94,10 @@ fun CustomPhoneField(
             }
             TextField(
                 value = values.text,
-                onValueChange = {values.text = it},
+                onValueChange = {
+                    values.text = it
+                    values.number = selectedOptionText + values.text
+                                },
                 modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
                 shape = RoundedCornerShape(8.dp),
                 singleLine = true,

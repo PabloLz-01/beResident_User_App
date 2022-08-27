@@ -7,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -16,6 +17,7 @@ import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.screens.register.widgets.AvisoPrivacidad
 import beresident.prototype.beresidentuserapp.screens.register.widgets.CargosPeriodicos
 import beresident.prototype.beresidentuserapp.screens.register.widgets.TerminosCondiciones
+import kotlinx.coroutines.launch
 
 class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() {
     var register = registerViewModel
@@ -24,22 +26,21 @@ class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() 
     fun Screen(navController: NavController){
         val name = remember { CustomTextField() }
         val lastName = remember { CustomTextField() }
-        val phone = remember { CustomTextField() }
+        val phone = remember { CustomPhoneField() }
         val email = remember { CustomTextField() }
         val confirmEmail = remember { CustomTextField() }
         val password = remember { CustomTextField() }
         val confirmPassword = remember { CustomTextField() }
         val checkbox = remember { CustomCheckbox() }
 
-        val scaffoldState = rememberScaffoldState()
         val snackbarHostState = SnackbarHostState()
+        val coroutineScope = rememberCoroutineScope()
 
         val terminos = remember { mutableStateOf(false) }
         val aviso = remember { mutableStateOf(false) }
         val cargos = remember { mutableStateOf(false) }
 
-        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
-
+        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant){
             Column {
                 CustomTopBar(stringResource(R.string.register), action = {
                     navController.popBackStack()
@@ -70,7 +71,20 @@ class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() 
                         })
                     Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_2))
                     CustomButton(stringResource(R.string.create_account), action = {
-                        register.onCreate(name.text, lastName.text, phone.text, email.text, password.text, snackbarHostState, navController)
+                        if (checkbox.isCheck){
+                            register.onCreate(
+                                name.text,
+                                lastName.text,
+                                phone.number, email.text,
+                                password.text,
+                                snackbarHostState,
+                                navController
+                            )
+                        }else {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Debe aceptar los terminos y condiciones.")
+                            }
+                        }
                     })
                     Spacer(modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_2))
                 }

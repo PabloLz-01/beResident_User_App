@@ -1,12 +1,9 @@
 package beresident.prototype.beresidentuserapp.core.services
 
-import androidx.compose.runtime.MutableState
 import beresident.prototype.beresidentuserapp.core.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 
 class AuthenticationService @Inject constructor(private val apiService: ApiService) {
@@ -17,8 +14,7 @@ class AuthenticationService @Inject constructor(private val apiService: ApiServi
             val call: Call<LoginModel> = apiService.login(UserModel(email, password))
 
             val  response = call.execute()
-            if (response.code() == 200) result = response.code()
-            else result = response.code()
+            result = response.code()
 
             result
 

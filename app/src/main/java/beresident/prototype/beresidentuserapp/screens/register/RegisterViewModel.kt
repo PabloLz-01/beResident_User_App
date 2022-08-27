@@ -1,5 +1,6 @@
 package beresident.prototype.beresidentuserapp.screens.register
 
+import android.content.Context
 import androidx.compose.material.SnackbarHostState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

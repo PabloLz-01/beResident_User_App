@@ -7,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +35,8 @@ class LoginScreen(loginViewModel: LoginViewModel) : ComponentActivity() {
         val scaffoldState = rememberScaffoldState()
         val coroutineScope = rememberCoroutineScope()
         val snackbarHostState = SnackbarHostState()
+
+        val context = LocalContext.current
 
         Scaffold (
             backgroundColor = MaterialTheme.colors.primaryVariant,
@@ -77,7 +80,14 @@ class LoginScreen(loginViewModel: LoginViewModel) : ComponentActivity() {
                     Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_3))
                     CustomButton(stringResource(R.string.login), action = {
                         coroutineScope.launch {
-                            login.onCreate(emailState.text, passwordState.text, snackbarHostState, navController)
+                            login.onCreate(
+                                emailState.text,
+                                passwordState.text,
+                                checkbox.isCheck,
+                                context,
+                                snackbarHostState,
+                                navController
+                            )
                         }
                     })
                     Division()
