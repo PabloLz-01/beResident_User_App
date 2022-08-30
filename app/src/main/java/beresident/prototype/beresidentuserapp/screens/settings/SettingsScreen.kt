@@ -1,6 +1,7 @@
 package beresident.prototype.beresidentuserapp.screens.settings
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -13,10 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
-import beresident.prototype.beresidentuserapp.screens.register.widgets.AvisoPrivacidad
-import beresident.prototype.beresidentuserapp.screens.register.widgets.CargosPeriodicos
-import beresident.prototype.beresidentuserapp.screens.register.widgets.DarkModeRow
-import beresident.prototype.beresidentuserapp.screens.register.widgets.TerminosCondiciones
+import beresident.prototype.beresidentuserapp.screens.settings.widgets.ThemeDialog
+import beresident.prototype.beresidentuserapp.screens.shared.CustomCheckbox
 import beresident.prototype.beresidentuserapp.screens.shared.CustomTopBar
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 
@@ -25,9 +24,8 @@ import beresident.prototype.beresidentuserapp.ui.theme.Grey
 fun SettingsScreen(navController: NavController){
     val context = LocalContext.current
 
-    val terminos = remember { mutableStateOf(false) }
-    val aviso = remember { mutableStateOf(false) }
-    val cargos = remember { mutableStateOf(false) }
+    var showDialogTheme = remember { mutableStateOf(false)}
+    val checkbox = remember { CustomCheckbox() }
 
     Scaffold (
 
@@ -59,16 +57,24 @@ fun SettingsScreen(navController: NavController){
                     )
                 }
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
-                DarkModeRow(textOne = "Tema de el sistema", textTwo = "Modo Oscuro", context = context)
+                Row(
+                    modifier = Modifier
+                    .padding(vertical = 4.dp)
+                    .height(48.dp)
+                    .fillMaxWidth()
+                    .clickable { showDialogTheme.value = true },
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(
+                        "Tema",
+                        color = Grey,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
-            TerminosCondiciones(terminos.value){
-                terminos.value = false
-            }
-            AvisoPrivacidad(aviso.value) {
-                aviso.value = false
-            }
-            CargosPeriodicos(cargos.value) {
-                cargos.value = false
+            ThemeDialog(showDialog = showDialogTheme.value, context = context) {
+                showDialogTheme.value = false
             }
         }
     )

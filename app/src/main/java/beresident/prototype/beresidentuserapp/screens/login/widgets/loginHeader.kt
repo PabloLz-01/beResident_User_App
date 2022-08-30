@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import beresident.prototype.beresidentuserapp.R
+import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 
 @Composable
 fun LoginHeader() {
@@ -23,20 +24,20 @@ fun LoginHeader() {
                 .fillMaxWidth()
                 .background(color = MaterialTheme.colors.primary)
                 .align(Alignment.TopCenter)
-                .height(200.dp)
+                .height(DefaultTheme.dimens.grid_15)
         )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = MaterialTheme.colors.primaryVariant)
                 .align(Alignment.BottomCenter)
-                .height(60.dp)
+                .height(DefaultTheme.dimens.grid_8)
         )
         Image(
             painter = painterResource(id = R.drawable.ic_undraw_traveling_wuyk),
             contentDescription = "Login Image",
             modifier = Modifier
-                .height(150.dp)
+                .height(DefaultTheme.dimens.grid_10)
                 .align(Alignment.Center)
                 .padding(start = 10.dp, end = 10.dp)
         )

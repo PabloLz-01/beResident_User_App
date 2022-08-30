@@ -62,7 +62,7 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
             }
             else -> {
                 if (check) rememberLogin(email, password, context)
-                navController.navigate(Screen.MainScreen.route){
+                navController.navigate(Screen.HomeScreen.route){
                     popUpTo(Screen.LoginScreen.route){ inclusive = true }
                 }
             }

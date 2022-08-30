@@ -6,12 +6,11 @@
     <item android:drawable="@color/primary" />
 
     <item
+        android:drawable="@drawable/ic_beresident"
+        android:height="60dp"
+        android:width="240dp"
         android:bottom="23dp"
         android:gravity="center">
-        <bitmap
-            android:src="@drawable/ic_beresident"
-            android:gravity="center"
-            />
     </item>
 
 </layer-list>
