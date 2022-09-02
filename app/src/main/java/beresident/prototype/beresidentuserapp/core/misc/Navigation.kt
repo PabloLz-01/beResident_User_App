@@ -1,12 +1,6 @@
 package beresident.prototype.beresidentuserapp.core.misc
 
-import android.content.Context
-import androidx.activity.compose.setContent
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -25,7 +19,8 @@ import beresident.prototype.beresidentuserapp.screens.splash.widgets.NoInternetS
 fun Navigation(
     loginViewModel: LoginViewModel,
     registerViewModel: RegisterViewModel,
-    forgotViewModel: ForgotViewModel
+    forgotViewModel: ForgotViewModel,
+    authentication: () -> Unit
 ) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.SplashScreen.route
@@ -34,7 +29,7 @@ fun Navigation(
             SplashScreen(navController)
         }
         composable(route = Screen.LoginScreen.route){
-            LoginScreen(loginViewModel).Screen(navController)
+            LoginScreen(loginViewModel).Screen(navController, authentication)
         }
         composable(route = Screen.ForgotScreen.route, arguments = listOf()){
             ForgotScreen(forgotViewModel).Screen(navController)

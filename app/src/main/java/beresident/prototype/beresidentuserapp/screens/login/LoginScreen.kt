@@ -2,6 +2,7 @@ package beresident.prototype.beresidentuserapp.screens.login
 
 import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
+import beresident.prototype.beresidentuserapp.core.misc.BiometricAuthentication
 import beresident.prototype.beresidentuserapp.core.misc.Screen
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
@@ -23,12 +25,13 @@ import beresident.prototype.beresidentuserapp.screens.login.widgets.LoginHeader
 import beresident.prototype.beresidentuserapp.screens.shared.*
 import kotlinx.coroutines.*
 
-class LoginScreen(loginViewModel: LoginViewModel) : ComponentActivity() {
+class LoginScreen(loginViewModel: LoginViewModel) : AppCompatActivity() {
     var login = loginViewModel
+
 
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
-      fun Screen(navController: NavController) {
+    fun Screen(navController: NavController, authentication: () -> Unit) {
         val emailState = remember { CustomTextField() }
         val passwordState = remember { CustomTextField() }
         val checkbox =  remember { CustomCheckbox() }
@@ -36,6 +39,10 @@ class LoginScreen(loginViewModel: LoginViewModel) : ComponentActivity() {
         val coroutineScope = rememberCoroutineScope()
         val snackbarHostState = SnackbarHostState()
         val context = LocalContext.current
+
+        val biometricStore = BiometricAuthentication(LocalContext.current)
+        val biometricAuthentication = biometricStore.getBiometricAuthentication
+            .collectAsState(initial = false)
 
         Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant,){
             Column (modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_1_5)){
@@ -84,6 +91,9 @@ class LoginScreen(loginViewModel: LoginViewModel) : ComponentActivity() {
                                 snackbarHostState,
                                 navController,
                             )
+                            if (biometricAuthentication.value!!){
+                                authentication()
+                            }
                         }
                     })
                     Division()

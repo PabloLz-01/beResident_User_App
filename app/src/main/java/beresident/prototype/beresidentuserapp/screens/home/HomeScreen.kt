@@ -3,17 +3,30 @@ package beresident.prototype.beresidentuserapp.screens.home
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.screens.shared.CustomTopBar
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import beresident.prototype.beresidentuserapp.core.misc.BiometricAuthentication
+import beresident.prototype.beresidentuserapp.core.misc.Screen
+import kotlinx.coroutines.delay
 
-class HomeScreen {
+class HomeScreen(): AppCompatActivity(){
+
     @Composable
     fun Screen(navController: NavController){
-        Scaffold (){
+        val biometricStore = BiometricAuthentication(LocalContext.current)
+        val authenticatedByBiometricAuthentication = biometricStore
+            .getAuthenticatedByBiometricAuthentication.collectAsState(initial = false)
+
+        if (!authenticatedByBiometricAuthentication.value!!) {
+            navController.navigate(Screen.LoginScreen.route)
+        }
+        Scaffold() {
             Column() {
                 CustomTopBar(text = "Home Screen", action = {})
                 AndroidView(factory = {
@@ -24,7 +37,7 @@ class HomeScreen {
                         )
                         webViewClient = WebViewClient()
                         loadUrl("https://www.geeksforgeeks.org") }
-                }, update = {it.loadUrl("https://www.geeksforgeeks.org")})
+                    }, update = {it.loadUrl("https://www.geeksforgeeks.org")})
             }
         }
     }

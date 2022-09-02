@@ -29,7 +29,7 @@ fun SplashScreen(navController: NavController){
     RequestPermission()) {
         if (isConnected) {
             if (userEmail.value != "" && userPassword.value != "") {
-                navController.navigate(Screen.MainScreen.route){
+                navController.navigate(Screen.HomeScreen.route){
                     popUpTo(Screen.SplashScreen.route){
                         inclusive = true
                     }

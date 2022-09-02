@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
+import beresident.prototype.beresidentuserapp.screens.settings.widgets.BiometricAuthRow
 import beresident.prototype.beresidentuserapp.screens.settings.widgets.ThemeDialog
 import beresident.prototype.beresidentuserapp.screens.shared.CustomCheckbox
 import beresident.prototype.beresidentuserapp.screens.shared.CustomTopBar
@@ -23,9 +24,7 @@ import beresident.prototype.beresidentuserapp.ui.theme.Grey
 @Composable
 fun SettingsScreen(navController: NavController){
     val context = LocalContext.current
-
     var showDialogTheme = remember { mutableStateOf(false)}
-    val checkbox = remember { CustomCheckbox() }
 
     Scaffold (
 
@@ -59,10 +58,10 @@ fun SettingsScreen(navController: NavController){
                 Divider(modifier = Modifier.padding(vertical = 8.dp))
                 Row(
                     modifier = Modifier
-                    .padding(vertical = 4.dp)
-                    .height(48.dp)
-                    .fillMaxWidth()
-                    .clickable { showDialogTheme.value = true },
+                        .padding(vertical = 4.dp)
+                        .height(48.dp)
+                        .fillMaxWidth()
+                        .clickable { showDialogTheme.value = true },
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
@@ -72,6 +71,7 @@ fun SettingsScreen(navController: NavController){
                         fontWeight = FontWeight.Bold
                     )
                 }
+                BiometricAuthRow("Habilitar autentificacion biometrica")
             }
             ThemeDialog(showDialog = showDialogTheme.value, context = context) {
                 showDialogTheme.value = false
