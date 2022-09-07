@@ -1,7 +1,7 @@
 package beresident.prototype.beresidentuserapp.screens.login
 
 import android.annotation.SuppressLint
-import androidx.activity.ComponentActivity
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.misc.BiometricAuthentication
 import beresident.prototype.beresidentuserapp.core.misc.Screen
+import beresident.prototype.beresidentuserapp.core.services.BiometricService
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 import beresident.prototype.beresidentuserapp.screens.login.widgets.AppHeader
@@ -31,14 +32,14 @@ class LoginScreen(loginViewModel: LoginViewModel) : AppCompatActivity() {
 
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
-    fun Screen(navController: NavController, authentication: () -> Unit) {
+    fun Screen(navController: NavController, activity: AppCompatActivity, context: Context) {
         val emailState = remember { CustomTextField() }
         val passwordState = remember { CustomTextField() }
         val checkbox =  remember { CustomCheckbox() }
 
-        val coroutineScope = rememberCoroutineScope()
-        val snackbarHostState = SnackbarHostState()
-        val context = LocalContext.current
+        val scope = rememberCoroutineScope()
+        val snackHostState = SnackbarHostState()
+
 
         val biometricStore = BiometricAuthentication(LocalContext.current)
         val biometricAuthentication = biometricStore.getBiometricAuthentication
@@ -74,7 +75,7 @@ class LoginScreen(loginViewModel: LoginViewModel) : AppCompatActivity() {
                             fontSize = 11.sp,
                             color = MaterialTheme.colors.secondary,
                             modifier = Modifier.clickable{
-                                coroutineScope.launch {
+                                scope.launch {
                                     navController.navigate(Screen.ForgotScreen.route)
                                 }
                             }
@@ -82,23 +83,18 @@ class LoginScreen(loginViewModel: LoginViewModel) : AppCompatActivity() {
                     }
                     Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_3))
                     CustomButton(stringResource(R.string.login), action = {
-                        coroutineScope.launch {
                             login.onCreate(
                                 emailState.text,
                                 passwordState.text,
                                 checkbox.isCheck,
                                 context,
-                                snackbarHostState,
+                                snackHostState,
                                 navController,
+                                biometricAuthentication.value!!,
                             )
-                            if (biometricAuthentication.value!!){
-                                authentication()
-                            }
-                        }
                     })
                     Division()
-                    OutlinedButton(modifier = Modifier
-                        .fillMaxWidth()
+                    OutlinedButton(modifier = Modifier.fillMaxWidth()
                         .height(DefaultTheme.dimens.grid_7),
                         onClick = {navController.navigate(Screen.RegisterScreen.route)},
                     ) {
@@ -107,16 +103,35 @@ class LoginScreen(loginViewModel: LoginViewModel) : AppCompatActivity() {
                 }
             }
             BoxWithConstraints (
-                Modifier
-                    .fillMaxSize()
-                    .padding(DefaultTheme.dimens.grid_2)){
+                Modifier.fillMaxSize().padding(DefaultTheme.dimens.grid_2)){
                 Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                    SnackbarHost(snackbarHostState)
+                    SnackbarHost(snackHostState)
                 }
             }
         }
     }
 
+    private fun onBiometricSucceeded(
+        biometricStore: BiometricAuthentication,
+        scope: CoroutineScope,
+        navController: NavController
+    ){
+        navController.navigate(Screen.HomeScreen.route){
+            popUpTo(Screen.LoginScreen.route){ inclusive = true }
+        }
+    }
+
+    private fun onBiometricFailed(scope: CoroutineScope, snackHostState: SnackbarHostState){
+        val message = "aaaaaaaaaaa"
+
+        scope.launch {
+            //biometric.putAuthenticatedByBiometricAuthentication(false)
+            snackHostState.currentSnackbarData?.dismiss()
+            snackHostState.showSnackbar(message)
+        }
+    }
+
+    private fun onBiometricError(){}
 }
 
 

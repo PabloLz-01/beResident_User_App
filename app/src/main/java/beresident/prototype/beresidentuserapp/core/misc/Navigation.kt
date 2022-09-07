@@ -1,5 +1,7 @@
 package beresident.prototype.beresidentuserapp.core.misc
 
+import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,7 +22,8 @@ fun Navigation(
     loginViewModel: LoginViewModel,
     registerViewModel: RegisterViewModel,
     forgotViewModel: ForgotViewModel,
-    authentication: () -> Unit
+    activity: AppCompatActivity,
+    context: Context
 ) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.SplashScreen.route
@@ -29,7 +32,7 @@ fun Navigation(
             SplashScreen(navController)
         }
         composable(route = Screen.LoginScreen.route){
-            LoginScreen(loginViewModel).Screen(navController, authentication)
+            LoginScreen(loginViewModel).Screen(navController, activity, context)
         }
         composable(route = Screen.ForgotScreen.route, arguments = listOf()){
             ForgotScreen(forgotViewModel).Screen(navController)
@@ -41,13 +44,13 @@ fun Navigation(
 
         }
         composable(route = Screen.SettingsScreen.route, arguments = listOf()){
-            SettingsScreen(navController)
+            SettingsScreen(navController, context, activity)
         }
         composable(route = Screen.NoInternet.route, arguments = listOf()){
             NoInternetScreen(navController)
         }
         composable(route = Screen.HomeScreen.route, arguments = listOf()){
-            HomeScreen().Screen(navController)
+            HomeScreen().Screen(navController, context, activity)
         }
     }
 }

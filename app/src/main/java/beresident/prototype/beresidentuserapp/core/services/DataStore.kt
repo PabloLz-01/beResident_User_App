@@ -65,6 +65,7 @@ class BiometricAuthentication(private val context: Context){
         val BIOMETRIC_AUTHENTICATION_TIME = longPreferencesKey("biometric_authentication_time")
         val AUTHENTICATED_BY_BIOMETRIC_AUTHENTICATION = booleanPreferencesKey("autjenticated_by_biometric_authentication")
         val LOCK_TIME = intPreferencesKey("lock_time")
+        val CAN_AUTH = booleanPreferencesKey("can_auth")
     }
 
     suspend fun putBiometricAuthentication(value: Boolean){
@@ -78,19 +79,12 @@ class BiometricAuthentication(private val context: Context){
     }
 
     @SuppressLint("CoroutineCreationDuringComposition")
-    @Composable
-    fun putBiometricAuthenticationTime(reset: Boolean = false){
-        val scope = rememberCoroutineScope()
-
+    suspend fun putBiometricAuthenticationTime(reset: Boolean = false){
         val time: Long = if (reset) System.currentTimeMillis()
-                        else System.currentTimeMillis() +
-                            getLockTime.collectAsState(initial = 0).value *
-                            60000
+                        else System.currentTimeMillis() + 1 * 60000
 
-        scope.launch {
-            context.biometricStore.edit { preferences ->
-                preferences[BIOMETRIC_AUTHENTICATION_TIME] = time
-            }
+        context.biometricStore.edit { preferences ->
+            preferences[BIOMETRIC_AUTHENTICATION_TIME] = time
         }
     }
 
@@ -109,14 +103,20 @@ class BiometricAuthentication(private val context: Context){
     }
 
     suspend fun putLockTime(value: Int, reset: Boolean){
-        context.biometricStore.edit { preferences ->
-            preferences[LOCK_TIME] = value
-        }
+        context.biometricStore.edit { preferences -> preferences[LOCK_TIME] = value }
         putBiometricAuthentication(reset)
     }
 
     val getLockTime: Flow<Int> = context.biometricStore.data.map { preferences ->
         preferences[LOCK_TIME] ?: 0
+    }
+
+    suspend fun  putCanAuth(value: Boolean){
+        context.biometricStore.edit { preferences -> preferences[CAN_AUTH] = value }
+    }
+
+    val getCanAuth: Flow<Boolean?> = context.biometricStore.data.map { preferences ->
+        preferences[CAN_AUTH] ?: false
     }
 
 }

@@ -1,6 +1,8 @@
 package beresident.prototype.beresidentuserapp.screens.settings
 
 import android.annotation.SuppressLint
+import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -14,7 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
+import beresident.prototype.beresidentuserapp.core.services.BiometricService
 import beresident.prototype.beresidentuserapp.screens.settings.widgets.BiometricAuthRow
+import beresident.prototype.beresidentuserapp.screens.settings.widgets.BiometricTime
 import beresident.prototype.beresidentuserapp.screens.settings.widgets.ThemeDialog
 import beresident.prototype.beresidentuserapp.screens.shared.CustomCheckbox
 import beresident.prototype.beresidentuserapp.screens.shared.CustomTopBar
@@ -22,9 +26,16 @@ import beresident.prototype.beresidentuserapp.ui.theme.Grey
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun SettingsScreen(navController: NavController){
+fun SettingsScreen(
+    navController: NavController,
+    context: Context,
+    activity: AppCompatActivity
+){
+    val biometricService = BiometricService(context, activity)
+
     val context = LocalContext.current
-    var showDialogTheme = remember { mutableStateOf(false)}
+    val scope = rememberCoroutineScope()
+    val showDialogTheme = remember { mutableStateOf(false)}
 
     Scaffold (
 
@@ -71,7 +82,12 @@ fun SettingsScreen(navController: NavController){
                         fontWeight = FontWeight.Bold
                     )
                 }
-                BiometricAuthRow("Habilitar autentificacion biometrica")
+                if (biometricService.setupAuth()){
+                    BiometricAuthRow("Habilitar autentificacion biometrica", context, activity)
+                    Divider(modifier = Modifier.padding(bottom = 8.dp))
+                    BiometricTime(scope)
+                }
+
             }
             ThemeDialog(showDialog = showDialogTheme.value, context = context) {
                 showDialogTheme.value = false

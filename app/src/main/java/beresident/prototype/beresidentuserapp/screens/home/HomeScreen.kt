@@ -1,34 +1,47 @@
 package beresident.prototype.beresidentuserapp.screens.home
 
+import android.content.Context
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.material.*
 import androidx.navigation.NavController
-import beresident.prototype.beresidentuserapp.screens.shared.CustomTopBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import beresident.prototype.beresidentuserapp.core.misc.BiometricAuthentication
-import beresident.prototype.beresidentuserapp.core.misc.Screen
-import kotlinx.coroutines.delay
+import beresident.prototype.beresidentuserapp.core.services.BiometricService
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
-class HomeScreen(): AppCompatActivity(){
+class HomeScreen: AppCompatActivity(){
+
 
     @Composable
-    fun Screen(navController: NavController){
-        val biometricStore = BiometricAuthentication(LocalContext.current)
-        val authenticatedByBiometricAuthentication = biometricStore
-            .getAuthenticatedByBiometricAuthentication.collectAsState(initial = false)
+    fun Screen(navController: NavController, context:Context, activity: AppCompatActivity){
+        val biometricService = BiometricService(context, activity)
 
-        if (!authenticatedByBiometricAuthentication.value!!) {
-            navController.navigate(Screen.LoginScreen.route)
+        val biometricStore = BiometricAuthentication(LocalContext.current)
+        val getBiometricAuthentication = biometricStore
+            .getBiometricAuthentication.collectAsState(initial = false)
+
+        LaunchedEffect(true){
+            biometricService.setupAuth()
+            if (getBiometricAuthentication.value!!) {
+                biometricService.authenticate(
+                    succeeded = { println("succeed")},
+                    failed = { println("failed")},
+                    error = { println("errpr")}
+                )
+            }
         }
+
+
         Scaffold() {
             Column() {
-                CustomTopBar(text = "Home Screen", action = {})
                 AndroidView(factory = {
                     WebView(it).apply {
                         layoutParams = ViewGroup.LayoutParams(
@@ -36,8 +49,8 @@ class HomeScreen(): AppCompatActivity(){
                             ViewGroup.LayoutParams.MATCH_PARENT
                         )
                         webViewClient = WebViewClient()
-                        loadUrl("https://www.geeksforgeeks.org") }
-                    }, update = {it.loadUrl("https://www.geeksforgeeks.org")})
+                        loadUrl("https://app.beresident.mx/") }
+                    }, update = {it.loadUrl("https://app.beresident.mx/")})
             }
         }
     }

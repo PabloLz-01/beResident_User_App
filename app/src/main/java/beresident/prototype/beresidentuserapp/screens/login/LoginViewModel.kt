@@ -2,9 +2,6 @@ package beresident.prototype.beresidentuserapp.screens.login
 
 import android.content.Context
 import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.SnackbarResult
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +9,6 @@ import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.core.misc.Screen
 import beresident.prototype.beresidentuserapp.core.misc.StoreUserCredentials
 import beresident.prototype.beresidentuserapp.core.model.Authentication
-import beresident.prototype.beresidentuserapp.screens.shared.CustomCheckbox
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,6 +24,7 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
         context: Context,
         snackbarHostState: SnackbarHostState,
         navController: NavController,
+        biometricAuthentication: Boolean,
     ){
         viewModelScope.launch {
             val result: Any = authentication.invoke(email, password)
@@ -39,6 +36,7 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
                 check,
                 snackbarHostState,
                 navController,
+                biometricAuthentication,
             ))
         }
     }
@@ -51,6 +49,7 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
         check: Boolean,
         snackbarHostState: SnackbarHostState,
         navController: NavController,
+        biometricAuthentication: Boolean
     ): String{
         var message = ""
 
@@ -62,6 +61,7 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
             }
             else -> {
                 if (check) rememberLogin(email, password, context)
+
                 navController.navigate(Screen.HomeScreen.route){
                     popUpTo(Screen.LoginScreen.route){ inclusive = true }
                 }
