@@ -5,11 +5,9 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import beresident.prototype.beresidentuserapp.core.misc.BiometricAuthentication
 import beresident.prototype.beresidentuserapp.core.misc.Navigation
@@ -20,7 +18,8 @@ import beresident.prototype.beresidentuserapp.screens.login.LoginViewModel
 import beresident.prototype.beresidentuserapp.screens.register.RegisterViewModel
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.Executor
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(){
@@ -29,29 +28,36 @@ class MainActivity : AppCompatActivity(){
     private val registerViewModel: RegisterViewModel by viewModels()
     private val forgotViewModel: ForgotViewModel by viewModels()
 
-    private lateinit var executor: Executor
-    private lateinit var biometricPrompt: BiometricPrompt
-    private lateinit var promptInfo: BiometricPrompt.PromptInfo
-
     //MainActivity context & activity
     private val activity = this
     private val context = this
 
     private val focusLiveData = MutableLiveData(false)//verifies if the app was back from foreground
+    private val biometricExpiredLiveData = MutableLiveData(false)//verifies if the app was back from foreground
+    private val biometricExpiredLiveDataTime = MutableLiveData<Long>(0)//verifies if the app was back from foreground
 
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
+        val biometricService = BiometricService(this, this)//Biometric Service
         val biometricStore = BiometricAuthentication(this)//Biometric datastore
         val dataStore = StoreTheme(this)//Theme datastore
 
-
         super.onCreate(savedInstanceState)
         setContent {
-            val themeValue = dataStore.getTheme.collectAsState(initial = 0)//Theme value in datastore
+            val themeValue = dataStore.getTheme.collectAsState(initial = 0.0)//Theme value in datastore
             var theme = isSystemInDarkTheme()//Default value for theme
+
             val focus = focusLiveData.observeAsState()//Focus as live data
+            val isBiometricAuthenticationExpired = biometricExpiredLiveData.observeAsState()
 
             val scope = rememberCoroutineScope()
+            val navController = Navigation()
+
+            //Gets all the values from biometric datastore
+            val isBiometricAuthentication = biometricStore.getBiometricAuthentication.collectAsState(initial = false)
+            val isAuthenticatedByBiometricAuthentication = biometricStore.getAuthenticatedByBiometricAuthentication.collectAsState(initial = false)
+            val biometricAuthenticationTime = biometricStore.getBiometricAuthenticationTime.collectAsState(initial = 0)
+
 
             when (themeValue.value) {//Assigns a the theme depending of the themeValue variable
                 0 -> theme = isSystemInDarkTheme()
@@ -60,41 +66,35 @@ class MainActivity : AppCompatActivity(){
             }
 
             DefaultTheme(darkTheme = theme) {
-                Navigation(
+                navController.Navigate(
                     loginViewModel,
                     registerViewModel,
                     forgotViewModel,
                     activity,
-                    context
+                    context,
                 )
             }
 
+            if (focus.value == true) {//Verifies if app was on foreground
+                println(isBiometricAuthentication.value)
+                println(isAuthenticatedByBiometricAuthentication.value)
+                println("System  : ${System.currentTimeMillis()}")
+                println("DataTime: ${biometricAuthenticationTime.value}")
+                println(isBiometricAuthenticationExpired.value)
 
-            if (focus.value == false) {//Verifies if app was on foreground
-                //Gets all the values from biometric datastore
-                val isBiometricAuthentication = biometricStore.getBiometricAuthentication.collectAsState(initial = false)
-                val isAuthenticatedByBiometricAuthentication = biometricStore.getAuthenticatedByBiometricAuthentication.collectAsState(initial = false)
-                val biometricAuthenticationTime = biometricStore.getBiometricAuthenticationTime.collectAsState(initial = 0)
-
-                //Sends a true or false if time is equal or bigger than biometric auth time
-                val isBiometricAuthenticationExpired = System.currentTimeMillis() >= biometricAuthenticationTime.value!!
-
-                val biometricService = BiometricService(context, activity)//Initializes biometric services
-                biometricService.setupAuth()//Setups the biometric service
-
-                println("Biometric auth: ${isBiometricAuthentication.value}")
-                println("Is authenticated by biometric: ${isAuthenticatedByBiometricAuthentication.value}")
-                println("Is biometric expired:${isBiometricAuthenticationExpired}")
+                scope.launch {
+                    if (isBiometricAuthentication.value!!) biometricStore.putAuthenticatedByBiometricAuthentication(false)
+                }
 
                 if (isBiometricAuthentication.value!!){ //Verifies if biometric auth is activated
-                    if(isAuthenticatedByBiometricAuthentication.value!! && isBiometricAuthenticationExpired) {
-                        //Sends the biometric window if biometric auth succeed and if the
-                        //biometric time has expired
-                        biometricService.authenticate(
-                            succeeded = { println("succeed")}, failed = { println("failed") }, error = { println("error")}, scope)
+                    if( !isAuthenticatedByBiometricAuthentication.value!! && isBiometricAuthenticationExpired.value!!) {
+                        scope.launch{
+                            biometricService.requestBiometricAuthentication(biometricStore, scope, navController.navController)
+                        }
                     }
-
                 }
+            } else {
+                biometricExpiredLiveDataTime.value = biometricAuthenticationTime.value!!
             }
         }
     }
@@ -102,13 +102,6 @@ class MainActivity : AppCompatActivity(){
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         focusLiveData.value = !focusLiveData.value!!
-    }
-
-    private  fun requestBiometric(){
-        executor = ContextCompat.getMainExecutor(this)
-
-        biometricPrompt = BiometricPrompt(this, executor, object: BiometricPrompt.AuthenticationCallback() {
-
-        })
+        biometricExpiredLiveData.value = System.currentTimeMillis() >= biometricExpiredLiveDataTime.value!!
     }
 }

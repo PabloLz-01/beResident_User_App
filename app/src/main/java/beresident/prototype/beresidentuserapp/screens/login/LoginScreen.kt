@@ -17,7 +17,6 @@ import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.misc.BiometricAuthentication
 import beresident.prototype.beresidentuserapp.core.misc.Screen
-import beresident.prototype.beresidentuserapp.core.services.BiometricService
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 import beresident.prototype.beresidentuserapp.screens.login.widgets.AppHeader
@@ -29,19 +28,18 @@ import kotlinx.coroutines.*
 class LoginScreen(loginViewModel: LoginViewModel) : AppCompatActivity() {
     var login = loginViewModel
 
-
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
-    fun Screen(navController: NavController, activity: AppCompatActivity, context: Context) {
+    fun Screen(navController: NavController) {
         val emailState = remember { CustomTextField() }
         val passwordState = remember { CustomTextField() }
         val checkbox =  remember { CustomCheckbox() }
 
+        val context = LocalContext.current
         val scope = rememberCoroutineScope()
         val snackHostState = SnackbarHostState()
 
-
-        val biometricStore = BiometricAuthentication(LocalContext.current)
+        val biometricStore = BiometricAuthentication(context)
         val biometricAuthentication = biometricStore.getBiometricAuthentication
             .collectAsState(initial = false)
 
@@ -110,28 +108,6 @@ class LoginScreen(loginViewModel: LoginViewModel) : AppCompatActivity() {
             }
         }
     }
-
-    private fun onBiometricSucceeded(
-        biometricStore: BiometricAuthentication,
-        scope: CoroutineScope,
-        navController: NavController
-    ){
-        navController.navigate(Screen.HomeScreen.route){
-            popUpTo(Screen.LoginScreen.route){ inclusive = true }
-        }
-    }
-
-    private fun onBiometricFailed(scope: CoroutineScope, snackHostState: SnackbarHostState){
-        val message = "aaaaaaaaaaa"
-
-        scope.launch {
-            //biometric.putAuthenticatedByBiometricAuthentication(false)
-            snackHostState.currentSnackbarData?.dismiss()
-            snackHostState.showSnackbar(message)
-        }
-    }
-
-    private fun onBiometricError(){}
 }
 
 

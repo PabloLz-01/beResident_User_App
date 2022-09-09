@@ -25,12 +25,9 @@ class BiometricAuthRow{
 @Composable
 fun BiometricAuthRow(
     text: String,
-    context: Context,
-    activity: AppCompatActivity,
+    action: () -> Unit,
     switch: BiometricAuthRow = remember{ BiometricAuthRow()}
 ){
-
-    val biometricService = BiometricService(context, activity)
     val scope = rememberCoroutineScope()
 
     val biometricStore = BiometricAuthentication(LocalContext.current)
@@ -61,9 +58,8 @@ fun BiometricAuthRow(
             onCheckedChange = {switch.value = it
                 scope.launch {
                     if (switch.value){
+                        action()
                         biometricStore.putBiometricAuthentication(true)
-                        biometricService.setupAuth()
-                        biometricService.authenticate({},{},{println("erroooor")}, scope)
 
                     } else {
                         biometricStore.putBiometricAuthentication(false)

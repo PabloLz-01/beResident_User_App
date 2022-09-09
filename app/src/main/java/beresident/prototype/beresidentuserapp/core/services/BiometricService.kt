@@ -4,18 +4,21 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.core.misc.BiometricAuthentication
+import beresident.prototype.beresidentuserapp.core.misc.Screen
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.Executor
 
-class BiometricService(val context: Context, val activity: AppCompatActivity): AppCompatActivity(){
-
+class BiometricService(val context: Context, val activity: AppCompatActivity, ) : AppCompatActivity(){
     private var canAuth = false
+
+    private lateinit var executor: Executor
+    private lateinit var biometricPrompt: BiometricPrompt
+    private lateinit var promptInfo: BiometricPrompt.PromptInfo
 
     fun setupAuth() : Boolean{
         if (BiometricManager.from(context).canAuthenticate(
@@ -27,39 +30,57 @@ class BiometricService(val context: Context, val activity: AppCompatActivity): A
         return canAuth
     }
 
-    /*fun authenticate(
-        succeeded: () -> Unit,
-        failed: () -> Unit,
-        error: () -> Unit,
-        scope: CoroutineScope? = null
-    ){
-        val biometricStore = BiometricAuthentication(context)
+    fun requestBiometricAuthentication(
+        biometricStore: BiometricAuthentication,
+        scope: CoroutineScope,
+        navController: NavController
+    ) {
+        executor = ContextCompat.getMainExecutor(context)
 
-        if (canAuth) {
-            BiometricPrompt(activity, ContextCompat.getMainExecutor(context),
-                object: BiometricPrompt.AuthenticationCallback() {
+        biometricPrompt = BiometricPrompt(activity, executor, object: BiometricPrompt.AuthenticationCallback() {
 
-                    override fun onAuthenticationFailed() {
-                        super.onAuthenticationFailed()
-                        failed()
-                    }
-
-                    override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                        super.onAuthenticationSucceeded(result)
-                        scope?.launch {
-                            biometricStore.putAuthenticatedByBiometricAuthentication(true)
+            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                super.onAuthenticationError(errorCode, errString)
+                when (errorCode){
+                    10 -> {
+                        scope.launch{
+                            if(navController.currentDestination?.route != Screen.LoginScreen.route){
+                                navController.navigate(Screen.LoginScreen.route)
+                            }
                         }
-
-                        succeeded()
-
-                    }
-
-                    override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                        super.onAuthenticationError(errorCode, errString)
-                        error()
                     }
                 }
-            ).authenticate(promptInfo)
-        }
-    }*/
+            }
+
+            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                super.onAuthenticationSucceeded(result)
+                scope.launch {
+                    if(navController.currentDestination?.route != Screen.HomeScreen.route){
+                        //navController.navigate(Screen.HomeScreen.route)
+                    }
+                    biometricStore.putBiometricAuthentication(true)
+                    biometricStore.putBiometricAuthenticationTime()
+                }
+            }
+
+            override fun onAuthenticationFailed() {
+                super.onAuthenticationFailed()
+                scope.launch{
+                    if(navController.currentDestination?.route != Screen.LoginScreen.route){
+                        navController.navigate(Screen.LoginScreen.route)
+                    }
+                    biometricStore.putAuthenticatedByBiometricAuthentication(false)
+                    println(navController.currentDestination?.route)
+                    println("Failed")
+                }
+            }
+        })
+
+        promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Biometric Authenticationaaaaaaaaa")
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+            .build()
+
+        biometricPrompt.authenticate(promptInfo)
+    }
 }
