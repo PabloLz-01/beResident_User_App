@@ -1,27 +1,19 @@
 package beresident.prototype.beresidentuserapp.screens.settings.widgets
 
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import beresident.prototype.beresidentuserapp.core.misc.StoreTheme
-import beresident.prototype.beresidentuserapp.screens.shared.CheckBox
+import beresident.prototype.beresidentuserapp.core.services.StoreTheme
 import beresident.prototype.beresidentuserapp.screens.shared.CustomButton
-import beresident.prototype.beresidentuserapp.screens.shared.CustomCheckbox
 import beresident.prototype.beresidentuserapp.screens.shared.CustomRadioButton
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable

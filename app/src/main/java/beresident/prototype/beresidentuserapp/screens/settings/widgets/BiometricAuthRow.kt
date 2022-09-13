@@ -1,7 +1,6 @@
 package beresident.prototype.beresidentuserapp.screens.settings.widgets
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -13,8 +12,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import beresident.prototype.beresidentuserapp.R
-import beresident.prototype.beresidentuserapp.core.misc.BiometricAuthentication
-import beresident.prototype.beresidentuserapp.core.services.BiometricService
+import beresident.prototype.beresidentuserapp.core.services.BiometricAuthentication
+import beresident.prototype.beresidentuserapp.core.services.StoreUserCredentials
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 import kotlinx.coroutines.launch
 
@@ -26,8 +25,12 @@ class BiometricAuthRow{
 fun BiometricAuthRow(
     text: String,
     action: () -> Unit,
-    switch: BiometricAuthRow = remember{ BiometricAuthRow()}
+    context: Context,
+    switch: BiometricAuthRow = remember{ BiometricAuthRow()},
 ){
+    val userCredentials = StoreUserCredentials(context)
+    val userEmail = userCredentials.getEmail.collectAsState(initial = "")
+    val userPassword = userCredentials.getPassword.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
 
     val biometricStore = BiometricAuthentication(LocalContext.current)
@@ -58,9 +61,10 @@ fun BiometricAuthRow(
             onCheckedChange = {switch.value = it
                 scope.launch {
                     if (switch.value){
-                        action()
+                        if (userEmail.value != "" || userPassword.value != "") {
+                            action()
+                        }
                         biometricStore.putBiometricAuthentication(true)
-
                     } else {
                         biometricStore.putBiometricAuthentication(false)
                     }

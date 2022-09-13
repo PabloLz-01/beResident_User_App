@@ -1,18 +1,13 @@
-package beresident.prototype.beresidentuserapp.core.misc
+package beresident.prototype.beresidentuserapp.core.services
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 class StoreTheme(private val context: Context) {
 
@@ -66,6 +61,7 @@ class BiometricAuthentication(private val context: Context){
         val AUTHENTICATED_BY_BIOMETRIC_AUTHENTICATION = booleanPreferencesKey("autjenticated_by_biometric_authentication")
         val LOCK_TIME = intPreferencesKey("lock_time")
         val CAN_AUTH = booleanPreferencesKey("can_auth")
+        val ATTEMPS = intPreferencesKey("attemps")
     }
 
     suspend fun putBiometricAuthentication(value: Boolean){
@@ -79,9 +75,9 @@ class BiometricAuthentication(private val context: Context){
     }
 
     @SuppressLint("CoroutineCreationDuringComposition")
-    suspend fun putBiometricAuthenticationTime(reset: Boolean = false){
+    suspend fun putBiometricAuthenticationTime(reset: Boolean = false, lockTime: Int){
         val time: Long = if (reset) System.currentTimeMillis()
-                        else System.currentTimeMillis() + 1 * 6000
+                        else System.currentTimeMillis() + lockTime * 60000
 
         context.biometricStore.edit { preferences ->
             preferences[BIOMETRIC_AUTHENTICATION_TIME] = time
@@ -117,6 +113,13 @@ class BiometricAuthentication(private val context: Context){
 
     val getCanAuth: Flow<Boolean?> = context.biometricStore.data.map { preferences ->
         preferences[CAN_AUTH] ?: false
+    }
+
+    val getAttemps: Flow<Int?> = context.biometricStore.data.map { preferences ->
+        preferences[ATTEMPS] ?: 0
+    }
+    suspend fun putAttemps(attemps: Int) {
+        context.biometricStore.edit { preferences -> preferences[ATTEMPS] = attemps }
     }
 
 }

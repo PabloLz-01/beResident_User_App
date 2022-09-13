@@ -14,7 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
-import beresident.prototype.beresidentuserapp.core.misc.BiometricAuthentication
+import beresident.prototype.beresidentuserapp.core.services.BiometricAuthentication
+import beresident.prototype.beresidentuserapp.core.services.StoreUserCredentials
 import beresident.prototype.beresidentuserapp.core.services.BiometricService
 import beresident.prototype.beresidentuserapp.screens.settings.widgets.BiometricAuthRow
 import beresident.prototype.beresidentuserapp.screens.settings.widgets.BiometricTime
@@ -30,7 +31,11 @@ class SettingsScreen(var activity: AppCompatActivity){
         val scope = rememberCoroutineScope()
         val showDialogTheme = remember { mutableStateOf(false)}
 
+        val userCredentials = StoreUserCredentials(context)
         val biometricStore = BiometricAuthentication(context)
+        val attempts = biometricStore.getAttemps.collectAsState(initial = 0)
+        val lockTime = biometricStore.getLockTime.collectAsState(initial = 0)
+        val isBiometricAuth = biometricStore.getBiometricAuthentication.collectAsState(initial = false)
         val biometricService = BiometricService(context, activity)
         Scaffold (
             backgroundColor = MaterialTheme.colors.primaryVariant,
@@ -76,11 +81,16 @@ class SettingsScreen(var activity: AppCompatActivity){
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    BiometricAuthRow("Habilitar autentificacion biometrica",
-                        action = { biometricService.requestBiometricAuthentication(biometricStore, scope, navController) }
-                    )
-                    Divider(modifier = Modifier.padding(bottom = 8.dp))
-                    BiometricTime(scope)
+                    if (biometricService.canUseBiometric()){
+                        BiometricAuthRow("Habilitar autentificacion biometrica",
+                            context = context,
+                            action = { biometricService.requestBiometricAuthentication(biometricStore, userCredentials,scope, navController, attempts.value!!, lockTime.value) }
+                        )
+                        Divider(modifier = Modifier.padding(bottom = 8.dp))
+                        if (isBiometricAuth.value!!) {
+                            BiometricTime(scope)
+                        }
+                    }
                 }
                 ThemeDialog(showDialog = showDialogTheme.value, context = context) {
                     showDialogTheme.value = false

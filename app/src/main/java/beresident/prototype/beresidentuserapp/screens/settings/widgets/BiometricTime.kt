@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import beresident.prototype.beresidentuserapp.core.misc.BiometricAuthentication
+import beresident.prototype.beresidentuserapp.core.services.BiometricAuthentication
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -22,8 +22,8 @@ fun BiometricTime(scope: CoroutineScope){
     val radioTime = listOf(0, 15, 30)
     val current =
         when (getLockTime.value) {
-            15 -> 1
-            30 -> 2
+            15 -> 15
+            30 -> 30
             else -> 0
         }
     val (selectedOpt, onOptSelected) = remember { mutableStateOf(radioTime[current])}
@@ -56,7 +56,7 @@ fun BiometricTime(scope: CoroutineScope){
                     onClick = {
                         onOptSelected(text)
                         scope.launch {
-                            biometricStore.putLockTime(1, true)
+                            biometricStore.putLockTime(text, true)
                             println(getLockTime.value)
                         }
                     }

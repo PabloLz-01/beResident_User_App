@@ -7,7 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.core.misc.Screen
-import beresident.prototype.beresidentuserapp.core.misc.StoreUserCredentials
+import beresident.prototype.beresidentuserapp.core.services.StoreUserCredentials
 import beresident.prototype.beresidentuserapp.core.services.ConnectionState
 import beresident.prototype.beresidentuserapp.core.services.currentConnectivityState
 import beresident.prototype.beresidentuserapp.core.services.observeConnectivityAsFlow

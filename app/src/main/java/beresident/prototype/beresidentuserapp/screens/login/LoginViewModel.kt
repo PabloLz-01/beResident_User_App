@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.core.misc.Screen
-import beresident.prototype.beresidentuserapp.core.misc.StoreUserCredentials
+import beresident.prototype.beresidentuserapp.core.services.StoreUserCredentials
 import beresident.prototype.beresidentuserapp.core.model.Authentication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -22,9 +22,8 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
         password: String,
         check: Boolean,
         context: Context,
-        snackbarHostState: SnackbarHostState,
+        snackHostState: SnackbarHostState,
         navController: NavController,
-        biometricAuthentication: Boolean,
     ){
         viewModelScope.launch {
             val result: Any = authentication.invoke(email, password)
@@ -34,9 +33,8 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
                 password,
                 context,
                 check,
-                snackbarHostState,
+                snackHostState,
                 navController,
-                biometricAuthentication,
             ))
         }
     }
@@ -47,17 +45,21 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
         password: String,
         context: Context,
         check: Boolean,
-        snackbarHostState: SnackbarHostState,
+        snackHostState: SnackbarHostState,
         navController: NavController,
-        biometricAuthentication: Boolean
     ): String{
         var message = ""
 
         when (statusCode) {
             401, 422, 403 -> {
                 message = "El usuario no existe"
-                snackbarHostState.currentSnackbarData?.dismiss()
-                snackbarHostState.showSnackbar(message)
+                snackHostState.currentSnackbarData?.dismiss()
+                snackHostState.showSnackbar(message)
+            }
+            500 -> {
+                message = "Error al conectarse con la base de datos"
+                snackHostState.currentSnackbarData?.dismiss()
+                snackHostState.showSnackbar(message)
             }
             else -> {
                 if (check) rememberLogin(email, password, context)

@@ -37,7 +37,7 @@ class Navigation(){
                 SplashScreen(navController)
             }
             composable(route = Screen.LoginScreen.route){
-                LoginScreen(loginViewModel).Screen(navController)
+                LoginScreen(loginViewModel, activity, context).Screen(navController)
             }
             composable(route = Screen.ForgotScreen.route, arguments = listOf()){
                 ForgotScreen(forgotViewModel).Screen(navController)

@@ -4,6 +4,7 @@ import beresident.prototype.beresidentuserapp.core.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Call
+import java.lang.Exception
 import javax.inject.Inject
 
 class AuthenticationService @Inject constructor(private val apiService: ApiService) {
@@ -13,11 +14,14 @@ class AuthenticationService @Inject constructor(private val apiService: ApiServi
         return withContext(Dispatchers.IO){
             val call: Call<LoginModel> = apiService.login(UserModel(email, password))
 
-            val  response = call.execute()
-            result = response.code()
+            try {
+                val  response = call.execute()
+                result = response.code()
 
-            result
-
+                result
+            } catch (e: Exception){
+                result = 500
+            }
         }
     }
 
