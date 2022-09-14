@@ -62,6 +62,9 @@ class MainActivity : AppCompatActivity(){
             val attempts = biometricStore.getAttemps.collectAsState(initial = 0)
             val lockTime = biometricStore.getLockTime.collectAsState(initial = 0)
 
+            val userEmail = userCredentials.getEmail.collectAsState(initial = "")
+            val userPassword = userCredentials.getPassword.collectAsState(initial = "")
+
             when (themeValue.value) {//Assigns a the theme depending of the themeValue variable
                 0 -> theme = isSystemInDarkTheme() //System default
                 1 -> theme = false // Light theme
@@ -80,6 +83,10 @@ class MainActivity : AppCompatActivity(){
             }
 
             if (focus.value == true) {//Verifies if app was on foreground
+                println(isAuthenticatedByBiometricAuthentication.value)
+                println(isBiometricAuthentication.value)
+                println(isBiometricAuthenticationExpired.value)
+
                 //Detects if biometric auth time is expired
                 biometricExpiredLiveData.value = System.currentTimeMillis() >= biometricExpiredLiveDataTime.value!!
 
@@ -91,21 +98,23 @@ class MainActivity : AppCompatActivity(){
                     //If time expired, then our authenticatedByBiometric is false
                     if (isBiometricAuthentication.value!!) biometricStore.putAuthenticatedByBiometricAuthentication(false)
                 }
-
-                if (isBiometricAuthentication.value!!){ //Verifies if biometric auth is activated
-                    if( !isAuthenticatedByBiometricAuthentication.value!! && isBiometricAuthenticationExpired.value!!) {
-                        scope.launch{
-                            biometricService.requestBiometricAuthentication(
-                                biometricStore,
-                                userCredentials,
-                                scope,
-                                navController.navController,
-                                attempts.value!!,
-                                lockTime.value
-                            )
+                if (userEmail.value != "" && userPassword.value != ""){
+                    if (isBiometricAuthentication.value!!){ //Verifies if biometric auth is activated
+                        if( !isAuthenticatedByBiometricAuthentication.value!! && isBiometricAuthenticationExpired.value!!) {
+                            scope.launch{
+                                biometricService.requestBiometricAuthentication(
+                                    biometricStore,
+                                    userCredentials,
+                                    scope,
+                                    navController.navController,
+                                    attempts.value!!,
+                                    lockTime.value
+                                )
+                            }
                         }
                     }
                 }
+
             } else {
                 biometricExpiredLiveData.value = System.currentTimeMillis() >= biometricExpiredLiveDataTime.value!!
 

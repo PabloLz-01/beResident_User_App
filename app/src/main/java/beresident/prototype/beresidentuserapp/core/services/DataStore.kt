@@ -76,8 +76,13 @@ class BiometricAuthentication(private val context: Context){
 
     @SuppressLint("CoroutineCreationDuringComposition")
     suspend fun putBiometricAuthenticationTime(reset: Boolean = false, lockTime: Int){
-        val time: Long = if (reset) System.currentTimeMillis()
-                        else System.currentTimeMillis() + lockTime * 60000
+        println(lockTime)
+        val time: Long =
+            if (reset) {
+                System.currentTimeMillis()
+            } else{
+                System.currentTimeMillis() + (lockTime * 60000)
+            }
 
         context.biometricStore.edit { preferences ->
             preferences[BIOMETRIC_AUTHENTICATION_TIME] = time

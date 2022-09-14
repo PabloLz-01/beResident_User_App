@@ -35,10 +35,13 @@ class HomeScreen: AppCompatActivity(){
         // If biometric is activated and the user authenticated is false, we request biometrics
         LaunchedEffect(key1 = true){
             biometricExpired = System.currentTimeMillis() >= biometricTime.value!!
+            println(isAuthenticatedByBiometric.value)
+            println(isBiometricAuthentication.value)
             println(biometricExpired)
             println(System.currentTimeMillis())
             println(biometricTime.value)
             if (!isAuthenticatedByBiometric.value!! && isBiometricAuthentication.value!! && biometricExpired){
+                print("aaaa")
                 biometricService.requestBiometricAuthentication(
                     biometricStore,
                     userCredentials ,
