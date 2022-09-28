@@ -11,42 +11,42 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 
-class CustomCheckboxa {
+class CustomCheckbox {
     var isCheck: Boolean by mutableStateOf(false)
 }
 
 @Composable
-fun CheckBoxa(
+fun CustomCheckbox(
     values: CustomCheckbox = remember { CustomCheckbox() },
     text: String,
     action: () -> Unit
 ) {
-
     Row {
         Card(
-            modifier = Modifier.background(MaterialTheme.colors.surface),
+            modifier = Modifier.background(MaterialTheme.colors.primaryVariant),
             elevation = 0.dp,
             shape = RoundedCornerShape(4.dp),
-            border = BorderStroke(1.5.dp, color = Color.Transparent)
+            border = BorderStroke(
+                1.dp,
+                color = if (values.isCheck) MaterialTheme.colors.secondary else Grey
+            )
         ) {
             Box(
                 modifier = Modifier
                     .size(15.dp)
-                    .background(if (values.isCheck) MaterialTheme.colors.secondary else MaterialTheme.colors.surface)
+                    .background(MaterialTheme.colors.primaryVariant)
                     .clickable(onClick = action),
                 contentAlignment = Alignment.Center
             ) {
                 if(values.isCheck)
-                    Icon(Icons.Default.Check, contentDescription = "", tint = MaterialTheme.colors.surface)
+                    Icon(Icons.Default.Check, contentDescription = "", tint = MaterialTheme.colors.secondary)
             }
         }
-
         Text(
             modifier = Modifier
                 .align(Alignment.CenterVertically)

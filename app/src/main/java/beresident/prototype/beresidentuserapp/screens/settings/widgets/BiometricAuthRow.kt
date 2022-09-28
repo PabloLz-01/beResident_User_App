@@ -7,11 +7,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.services.BiometricAuthentication
 import beresident.prototype.beresidentuserapp.core.services.StoreUserCredentials
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
@@ -42,20 +40,12 @@ fun BiometricAuthRow(
         modifier = Modifier.padding(top = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ){
-        Row(verticalAlignment = Alignment.CenterVertically){
-            Icon(
-                painter = painterResource(R.drawable.ic_fingerprint),
-                contentDescription = "fingerprint",
-                tint = MaterialTheme.colors.secondary,
-                modifier = Modifier.height(24.dp)
-            )
-            Text(
-                text,
-                color = Grey,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        Text(
+            text,
+            color = Grey,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold
+        )
         Switch(
             checked = switch.value,
             onCheckedChange = {switch.value = it

@@ -35,10 +35,14 @@ class AuthenticationService @Inject constructor(private val apiService: ApiServi
         return withContext(Dispatchers.IO){
             val call: Call<RegisterModel> = apiService.register(RegisterModel(name, lastName, phone, email, password))
 
-            val response = call.execute()
-            result = response.code()
+            try {
+                val  response = call.execute()
+                result = response.code()
 
-            result
+                result
+            } catch (e: Exception){
+                result = 500
+            }
         }
     }
 
@@ -46,10 +50,14 @@ class AuthenticationService @Inject constructor(private val apiService: ApiServi
         return withContext(Dispatchers.IO){
             val call: Call<URLModel> = apiService.forgot(ForgotModel(email))
 
-            val response = call.execute()
-            result = response.code()
+            try {
+                val  response = call.execute()
+                result = response.code()
 
-            result
+                result
+            } catch (e: Exception){
+                result = 500
+            }
         }
     }
 }

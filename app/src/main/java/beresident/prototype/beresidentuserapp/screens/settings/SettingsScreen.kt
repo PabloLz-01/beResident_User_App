@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,7 +41,7 @@ class SettingsScreen(var activity: AppCompatActivity){
         val biometricService = BiometricService(context, activity)
         Scaffold (
             backgroundColor = MaterialTheme.colors.primaryVariant,
-            topBar = { CustomTopBar(text = "Ajustes", action = {navController.popBackStack()}) },
+            topBar = { CustomTopBar(stringResource(R.string.settings), action = {navController.popBackStack()}) },
             bottomBar = {},
             content = {
                 Column(
@@ -51,14 +53,8 @@ class SettingsScreen(var activity: AppCompatActivity){
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(top = 16.dp)
                     ){
-                        Icon(
-                            painter = painterResource(R.drawable.ic_phone_iphone_fill0_wght400_grad0_opsz48),
-                            contentDescription = "phone",
-                            tint = MaterialTheme.colors.secondary,
-                            modifier = Modifier.height(24.dp)
-                        )
                         Text(
-                            text = "Sistema",
+                            text = stringResource(R.string.system),
                             color = Grey,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
@@ -72,17 +68,26 @@ class SettingsScreen(var activity: AppCompatActivity){
                             .height(48.dp)
                             .fillMaxWidth()
                             .clickable { showDialogTheme.value = true },
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ){
                         Text(
-                            "Tema",
+                            stringResource(R.string.theme),
                             color = Grey,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold
                         )
+                        Icon(
+                            Icons.Outlined.KeyboardArrowRight,
+                            contentDescription = "Menu",
+                            tint = Grey,
+                            modifier = Modifier
+                                .width(24.dp)
+                        )
                     }
                     if (biometricService.canUseBiometric()){
-                        BiometricAuthRow("Habilitar autentificacion biometrica",
+                        BiometricAuthRow(
+                            stringResource(R.string.enable_biometric_auth),
                             context = context,
                             action = { biometricService.requestBiometricAuthentication(biometricStore, userCredentials,scope, navController, attempts.value!!, lockTime.value) }
                         )

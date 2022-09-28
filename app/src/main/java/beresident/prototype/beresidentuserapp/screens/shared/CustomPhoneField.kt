@@ -1,7 +1,6 @@
 package beresident.prototype.beresidentuserapp.screens.shared
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -17,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 
-class CustomPhoneField () {
+class CustomPhoneField{
     var text: String by mutableStateOf("")
     var number: String by mutableStateOf("")
 }
@@ -31,26 +30,26 @@ fun CustomPhoneField(
     bottomPadding: Dp? = null,
 ) {
     //Properties
-    val textPadding = textPadding ?: DefaultTheme.dimens.grid_0_5
-    val bottomPadding = bottomPadding ?: 0.dp
+    val txtPadding = textPadding ?: DefaultTheme.dimens.grid_0_5
+    val btmPadding = bottomPadding ?: 0.dp
 
     val options = listOf("+52", "+1")
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(options[0]) }
 
-    Column(modifier = Modifier.padding(bottom = bottomPadding)) {
+    Column(modifier = Modifier.padding(bottom = btmPadding)) {
         Text(
             text = label,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = textPadding),
+                .padding(bottom = txtPadding),
             textAlign = TextAlign.Start,
             color = Grey,
             fontSize = 13.sp,
             fontWeight = FontWeight.Bold
         )
-        Row() {
-            ExposedDropdownMenuBox(
+        Row{
+            /*ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = {
                     expanded = !expanded
@@ -60,14 +59,15 @@ fun CustomPhoneField(
                     readOnly = true,
                     value = selectedOptionText,
                     onValueChange = { values.number = selectedOptionText + values.text},
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.width(100.dp),
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded,) },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(DefaultTheme.dimens.grid_6)
+                        .padding(end = DefaultTheme.dimens.grid_0_5),
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                     colors = TextFieldDefaults.textFieldColors(
-                        trailingIconColor = Grey,
-                        focusedIndicatorColor = Color.Transparent,
-                        backgroundColor = MaterialTheme.colors.surface,
-                        unfocusedIndicatorColor = Color.Transparent
+                        backgroundColor = Color.Transparent,
+                        unfocusedIndicatorColor = Grey,
+                        focusedIndicatorColor = MaterialTheme.colors.secondary
                     ),
                     textStyle = TextStyle(color = Grey, fontSize = 12.sp),
                 )
@@ -91,25 +91,26 @@ fun CustomPhoneField(
                         }
                     }
                 }
-            }
+            }*/
             TextField(
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 value = values.text,
                 onValueChange = {
                     values.text = it
                     values.number = selectedOptionText + values.text
                                 },
-                modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
-                shape = RoundedCornerShape(8.dp),
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                textStyle = TextStyle(color = Grey, fontSize = 12.sp),
+                textStyle = TextStyle(color = Grey, fontSize = 14.sp),
                 colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MaterialTheme.colors.surface,
-                focusedIndicatorColor = Color.Transparent,
-                cursorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
+                    backgroundColor = Color.Transparent,
+                    unfocusedIndicatorColor = Grey,
+                    focusedIndicatorColor = MaterialTheme.colors.secondary
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(DefaultTheme.dimens.grid_6)
+                    .padding(start = DefaultTheme.dimens.grid_1)
             )
-        )
         }
     }
 }

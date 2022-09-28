@@ -13,23 +13,28 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ForgotViewModel @Inject constructor(private val authentication: Authentication): ViewModel(){
-    val error = MutableLiveData<Any>()
+    private val error = MutableLiveData<Any>()
 
-    fun onCreate(email: String, snackbarHostState: SnackbarHostState, navController: NavController){
+    fun onCreate(email: String, snackHostState: SnackbarHostState, navController: NavController){
         viewModelScope.launch {
             val result: Any = authentication.forgot(email)
-            error.postValue(handler(result as Int, snackbarHostState, navController))
+            error.postValue(handler(result as Int, snackHostState, navController))
         }
     }
 
-    private suspend fun handler(statusCode: Int, snackbarHostState: SnackbarHostState, navController: NavController): String {
+    private suspend fun handler(statusCode: Int, snackHostState: SnackbarHostState, navController: NavController): String {
         var message = ""
 
         when (statusCode) {
             401, 422, 402, 404 -> {
                 message = "El correo electronico no se encuentra registrado"
-                snackbarHostState.currentSnackbarData?.dismiss()
-                snackbarHostState.showSnackbar(message)
+                snackHostState.currentSnackbarData?.dismiss()
+                snackHostState.showSnackbar(message)
+            }
+            500 -> {
+                message = "Error al conectarse con la base de datos"
+                snackHostState.currentSnackbarData?.dismiss()
+                snackHostState.showSnackbar(message)
             }
             else -> {
                 navController.navigate(Screen.LoginScreen.route){

@@ -3,12 +3,14 @@ package beresident.prototype.beresidentuserapp.screens.login
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,30 +23,34 @@ import beresident.prototype.beresidentuserapp.core.services.StoreUserCredentials
 import beresident.prototype.beresidentuserapp.core.services.BiometricService
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
-import beresident.prototype.beresidentuserapp.screens.login.widgets.AppHeader
 import beresident.prototype.beresidentuserapp.screens.login.widgets.BiometricAuth
-import beresident.prototype.beresidentuserapp.screens.login.widgets.Division
+import beresident.prototype.beresidentuserapp.screens.login.widgets.LoginDivision
 import beresident.prototype.beresidentuserapp.screens.login.widgets.LoginHeader
 import beresident.prototype.beresidentuserapp.screens.shared.*
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
-class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivity, var actContext: Context) : AppCompatActivity() {
+@AndroidEntryPoint
+class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivity, private var actContext: Context) : AppCompatActivity() {
     var login = loginViewModel
 
-    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+    @SuppressLint("CoroutineCreationDuringComposition")
     @Composable
     fun Screen(navController: NavController) {
         val userStore = StoreUserCredentials(LocalContext.current)
         val userEmail = userStore.getEmail.collectAsState(initial = "")
         val userPassword = userStore.getPassword.collectAsState(initial = "")
 
-        val emailState = remember { CustomTextField() }
-        val passwordState = remember { CustomTextField() }
+        val emailState = remember { CustomTxtField() }
+        val passwordState = remember { CustomTxtField() }
         val checkbox =  remember { CustomCheckbox() }
+        var progress = login.progress.value
 
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
         val snackHostState = SnackbarHostState()
+        val snackStatus = login.snackStatus.value
+        val snackMessage = login.snackMessage.value
 
         val biometricService = BiometricService(actContext, activity)
         val biometricStore = BiometricAuthentication(context)
@@ -58,20 +64,24 @@ class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivit
             if (checkbox.isCheck) emailState.text = userEmail.value!!
         }
 
+         if (snackStatus) {
+             scope.launch {
+                 snackHostState.currentSnackbarData?.dismiss()
+                 snackHostState.showSnackbar(snackMessage)
+             }
+         }
 
-
-        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant,){
+        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant){
             Column (modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_1_5)){
-                AppHeader(action = { navController.navigate(Screen.SettingsScreen.route) })
-                LoginHeader()
+                LoginHeader(action = { navController.navigate(Screen.SettingsScreen.route) })
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 12.dp)
                 ) {
-                    CustomTextField(emailState, stringResource(R.string.email), bottomPadding = DefaultTheme.dimens.grid_2)
-                    CustomTextField(passwordState, "Contraseña", password = true)
+                    CustomTxtField(emailState, stringResource(R.string.email), btmPadding = DefaultTheme.dimens.grid_2)
+                    CustomTxtField(passwordState, stringResource(R.string.password), userPassword = true)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -82,9 +92,13 @@ class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivit
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        CheckBox(checkbox, stringResource(R.string.remember_me), action = {
-                            checkbox.isCheck = !checkbox.isCheck
-                        })
+                        CustomCheckbox(
+                            checkbox,
+                            stringResource(R.string.remember_me),
+                            action = {
+                                checkbox.isCheck = !checkbox.isCheck
+                            }
+                        )
                         Text(
                             stringResource(R.string.forgot_password),
                             fontSize = 11.sp,
@@ -97,24 +111,26 @@ class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivit
                         )
                     }
                     Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_3))
-                    CustomButton(stringResource(R.string.login), action = {
+                    CustomOutlineBtn(
+                        text = stringResource(R.string.login),
+                        textColor = Color.White,
+                        action = {
                             login.onCreate(
                                 emailState.text,
                                 passwordState.text,
                                 checkbox.isCheck,
                                 context,
-                                snackHostState,
                                 navController,
                             )
-                    })
-                    Division()
-                    OutlinedButton(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(DefaultTheme.dimens.grid_7),
-                        onClick = {navController.navigate(Screen.RegisterScreen.route)},
-                    ) {
-                        Text(stringResource(R.string.create_an_account), color = Grey)
-                    }
+                        },
+                        background = MaterialTheme.colors.secondary
+                    )
+                    LoginDivision()
+                    CustomOutlineBtn(
+                        text = stringResource(R.string.create_an_account),
+                        action = {navController.navigate(Screen.RegisterScreen.route)},
+                        foreground = Grey,
+                    )
                     if (biometricAuthentication.value!! && userPassword.value!! != "" && userEmail.value!! != "" ) {
                         BiometricAuth(
                             userStore,
@@ -129,7 +145,6 @@ class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivit
                                     passwordState.text,
                                     checkbox.isCheck,
                                     context,
-                                    snackHostState,
                                     navController,
                                 )
                             },
@@ -137,6 +152,17 @@ class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivit
                             lockTime = lockTime.value
                         )
                     }
+                }
+            }
+            if (progress!!){
+                Column(
+                    modifier = Modifier
+                        .background(Color.Black.copy(alpha = 0.6f))
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularIndicator(isDisplayed = true)
                 }
             }
             BoxWithConstraints (
@@ -151,8 +177,8 @@ class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivit
     }
 
     private fun onBiometricSuccess(
-        emailState: CustomTextField,
-        passwordState: CustomTextField,
+        emailState: CustomTxtField,
+        passwordState: CustomTxtField,
         email: String,
         password: String
     ){

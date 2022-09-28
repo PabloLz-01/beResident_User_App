@@ -5,10 +5,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.produceState
-import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -25,7 +21,7 @@ val Context.currentConnectivityState: ConnectionState
     }
 
 private fun getCurrentConnectivityState( connectivityManager: ConnectivityManager): ConnectionState{
-    val connected = connectivityManager.allNetworks.any() { network ->
+    val connected = connectivityManager.allNetworks.any { network ->
         connectivityManager.getNetworkCapabilities(network)
             ?. hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             ?: false

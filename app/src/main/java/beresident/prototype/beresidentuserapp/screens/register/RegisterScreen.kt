@@ -1,6 +1,5 @@
 package beresident.prototype.beresidentuserapp.screens.register
 
-import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -8,52 +7,41 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
+import beresident.prototype.beresidentuserapp.screens.register.widgets.*
 import beresident.prototype.beresidentuserapp.screens.shared.*
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
-import beresident.prototype.beresidentuserapp.screens.register.widgets.AvisoPrivacidad
-import beresident.prototype.beresidentuserapp.screens.register.widgets.CargosPeriodicos
-import beresident.prototype.beresidentuserapp.screens.register.widgets.TerminosCondiciones
 import com.google.accompanist.insets.imePadding
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() {
     var register = registerViewModel
 
-
-    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
     fun Screen(navController: NavController){
-        val name = remember { CustomTextField() }
-        val lastName = remember { CustomTextField() }
+        val name = remember { CustomTxtField() }
+        val lastName = remember { CustomTxtField() }
         val phone = remember { CustomPhoneField() }
-        val email = remember { CustomTextField() }
-        val confirmEmail = remember { CustomTextField() }
-        val password = remember { CustomTextField() }
-        val confirmPassword = remember { CustomTextField() }
+        val email = remember { CustomTxtField() }
+        val confirmEmail = remember { CustomTxtField() }
+        val password = remember { CustomTxtField() }
+        val confirmPassword = remember { CustomTxtField() }
         val checkbox = remember { CustomCheckbox() }
 
-        val snackbarHostState = SnackbarHostState()
+        val snackHostState = SnackbarHostState()
+        val snackMessage =  stringResource(R.string.accept_terms_advices_charges)
         val coroutineScope = rememberCoroutineScope()
 
-        val terminos = remember { mutableStateOf(false) }
-        val aviso = remember { mutableStateOf(false) }
-        val cargos = remember { mutableStateOf(false) }
+        val terms = remember { mutableStateOf(false) }
+        val advices = remember { mutableStateOf(false) }
+        val charges = remember { mutableStateOf(false) }
 
-        fun requestBringIntoView(focusState: FocusState, viewItem: Int){
-            if (focusState.isFocused){
-                coroutineScope.launch {
-                    delay(200)
-                }
-            }
-        }
 
         Scaffold (
             backgroundColor = MaterialTheme.colors.primaryVariant,
@@ -78,62 +66,63 @@ class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() 
                         .navigationBarsPadding()
                 ) {
                     Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_2))
-                    CustomTextField(name, "Nombre(s)",  bottomPadding = DefaultTheme.dimens.grid_2)
-                    CustomTextField(lastName, "Apellido(s)", bottomPadding = DefaultTheme.dimens.grid_2)
+                    CustomTxtField(name, stringResource(R.string.name),  btmPadding = DefaultTheme.dimens.grid_2)
+                    CustomTxtField(lastName, stringResource(R.string.last_name), btmPadding = DefaultTheme.dimens.grid_2)
                     CustomPhoneField(phone, stringResource(R.string.phone_number), bottomPadding = DefaultTheme.dimens.grid_2)
-                    CustomTextField(email, stringResource(R.string.email), bottomPadding = DefaultTheme.dimens.grid_2)
-                    CustomTextField(confirmEmail, stringResource(R.string.confirm_email), bottomPadding = DefaultTheme.dimens.grid_2)
-                    CustomTextField(password, "Contraseña", bottomPadding = DefaultTheme.dimens.grid_2, password = true)
-                    CustomTextField(confirmPassword, "Confirme su contraseña",  password = true, bottomPadding = DefaultTheme.dimens.grid_1_5)
-                    CheckBox(checkbox, stringResource(R.string.checkbox_terms),
+                    CustomTxtField(email, stringResource(R.string.email), btmPadding = DefaultTheme.dimens.grid_2)
+                    CustomTxtField(confirmEmail, stringResource(R.string.confirm_email), btmPadding = DefaultTheme.dimens.grid_2)
+                    CustomTxtField(password, stringResource(R.string.password), btmPadding = DefaultTheme.dimens.grid_2, userPassword = true)
+                    CustomTxtField(confirmPassword, stringResource(R.string.confirm_password),  userPassword = true, btmPadding = DefaultTheme.dimens.grid_1_5)
+                    CustomCheckbox(
+                        checkbox,
+                        stringResource(R.string.checkbox_terms),
                         action = {
                             checkbox.isCheck = !checkbox.isCheck
                             if (checkbox.isCheck) {
-                                terminos.value = true
-                                aviso.value =  true
-                                cargos.value =  true
-                            }
-                        })
-                    Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_2))
-                    CustomButton(stringResource(R.string.create_account), action = {
-                        if (checkbox.isCheck){
-                            register.onCreate(
-                                name.text,
-                                lastName.text,
-                                phone.number, email.text,
-                                password.text,
-                                snackbarHostState,
-                                navController
-                            )
-                        }else {
-                            coroutineScope.launch {
-                                snackbarHostState.currentSnackbarData?.dismiss()
-                                snackbarHostState.showSnackbar("Debe aceptar los terminos y condiciones.")
+                                terms.value = true
+                                advices.value =  true
+                                charges.value =  true
                             }
                         }
-                    })
+                    )
+                    Spacer(modifier = Modifier.height(DefaultTheme.dimens.grid_2))
+                    CustomOutlineBtn(
+                        text = stringResource(R.string.create_account),
+                        textColor = Color.White,
+                        background = MaterialTheme.colors.secondary,
+                        action = {
+                            if (checkbox.isCheck){
+                                register.onCreate(
+                                    name.text,
+                                    lastName.text,
+                                    phone.number, email.text,
+                                    password.text,
+                                    snackHostState,
+                                    navController
+                                )
+                            }else {
+                                coroutineScope.launch {
+                                    snackHostState.currentSnackbarData?.dismiss()
+                                    snackHostState.showSnackbar(snackMessage)
+                                }
+                            }
+                        }
+                    )
                     Spacer(modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_2))
                 }
             }
-            TerminosCondiciones(terminos.value){
-                terminos.value = false
-            }
-            AvisoPrivacidad(aviso.value) {
-                aviso.value = false
-            }
-            CargosPeriodicos(cargos.value) {
-                cargos.value = false
-            }
+            Terms(terms.value){ terms.value = false }
+            Advice(advices.value) { advices.value = false }
+            Charge(charges.value) { charges.value = false }
             BoxWithConstraints (
                 Modifier
                     .fillMaxSize()
                     .padding(DefaultTheme.dimens.grid_2)){
                 Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                    SnackbarHost(snackbarHostState)
+                    SnackbarHost(snackHostState)
                 }
             }
         }
     }
-
 }
 
