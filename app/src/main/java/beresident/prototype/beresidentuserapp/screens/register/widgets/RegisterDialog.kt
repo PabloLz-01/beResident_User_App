@@ -5,15 +5,16 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import beresident.prototype.beresidentuserapp.R
 
-const val textoMuerto = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla suscipit neque a augue accumsan laoreet. Aliquam quis ligula ac leo euismod mattis. Praesent eget turpis lorem. Ut fringilla scelerisque erat. Nulla id est eget risus fermentum ultricies vitae quis dolor. Duis et odio nec erat consectetur sollicitudin. Nullam bibendum sapien non nunc lobortis auctor. Suspendisse nec eleifend lacus, aliquet accumsan metus. Proin bibendum quam vitae augue tempor porta. Fusce mattis sodales rhoncus. Nulla elementum viverra egestas.\n"
 @Composable
-fun TerminosCondiciones(showDialog : Boolean, dismissDialog : () -> Unit) {
+fun Terms(showDialog : Boolean, dismissDialog : () -> Unit) {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { dismissDialog() },
-            title = { Text(text = "Terminos y Condiciones", color = Color.Black) },
-            text = { Text(textoMuerto, color = Color.Black) },
+            title = { Text(stringResource(R.string.terms), color = Color.Black) },
+            text = { Text(stringResource(R.string.dead_text), color = Color.Black) },
             confirmButton = {},
             dismissButton = {
                 TextButton(
@@ -21,7 +22,7 @@ fun TerminosCondiciones(showDialog : Boolean, dismissDialog : () -> Unit) {
                         dismissDialog()
                     }
                 ) {
-                    Text("Aceptar", color = Color.Black)
+                    Text(stringResource(R.string.accept), color = Color.Black)
                 }
             },
             backgroundColor = Color.White,
@@ -30,12 +31,12 @@ fun TerminosCondiciones(showDialog : Boolean, dismissDialog : () -> Unit) {
     }
 }
 @Composable
-fun AvisoPrivacidad(showDialog : Boolean, dismissDialog : () -> Unit) {
+fun Advice(showDialog : Boolean, dismissDialog : () -> Unit) {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { dismissDialog() },
-            title = { Text(text = "Aviso de Privacidad", color = Color.Black) },
-            text = { Text( textoMuerto, color = Color.Black) },
+            title = { Text(stringResource(R.string.privacy_advice), color = Color.Black) },
+            text = { Text(stringResource(R.string.dead_text), color = Color.Black) },
             confirmButton = {},
             dismissButton = {
                 TextButton(
@@ -43,7 +44,7 @@ fun AvisoPrivacidad(showDialog : Boolean, dismissDialog : () -> Unit) {
                         dismissDialog()
                     }
                 ) {
-                    Text("Aceptar", color = Color.Black)
+                    Text(stringResource(R.string.accept), color = Color.Black)
                 }
             },
             backgroundColor = Color.White,
@@ -52,12 +53,12 @@ fun AvisoPrivacidad(showDialog : Boolean, dismissDialog : () -> Unit) {
     }
 }
 @Composable
-fun CargosPeriodicos(showDialog : Boolean, dismissDialog : () -> Unit) {
+fun Charge(showDialog : Boolean, dismissDialog : () -> Unit) {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { dismissDialog() },
-            title = { Text(text = "Aviso de Cargos Periodicos", color = Color.Black) },
-            text = { Text(textoMuerto, color = Color.Black) },
+            title = { Text(stringResource(R.string.periodic_charges), color = Color.Black) },
+            text = { Text(stringResource(R.string.dead_text), color = Color.Black) },
             confirmButton = {},
             dismissButton = {
                 TextButton(
@@ -65,7 +66,7 @@ fun CargosPeriodicos(showDialog : Boolean, dismissDialog : () -> Unit) {
                         dismissDialog()
                     }
                 ) {
-                    Text("Aceptar", color = Color.Black)
+                    Text(stringResource(R.string.accept), color = Color.Black)
                 }
             },
             backgroundColor = Color.White,

@@ -2,7 +2,7 @@ package beresident.prototype.beresidentuserapp.screens.login
 
 import android.content.Context
 import androidx.compose.material.SnackbarHostState
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -15,27 +15,31 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val authentication: Authentication) : ViewModel(){
-    private val error = MutableLiveData<Any>()
+    val progress = mutableStateOf(false)
+    val snackStatus = mutableStateOf(false)
+    val snackMessage = mutableStateOf("")
 
     fun onCreate(
         email: String,
         password: String,
         check: Boolean,
         context: Context,
-        snackHostState: SnackbarHostState,
         navController: NavController,
     ){
+        snackStatus.value = false
         viewModelScope.launch {
+            progress.value = true
             val result: Any = authentication.invoke(email, password)
-            error.postValue(handler(
+            progress.value = false
+            print(result)
+            handler(
                 result as Int,
                 email,
                 password,
                 context,
                 check,
-                snackHostState,
                 navController,
-            ))
+            )
         }
     }
 
@@ -45,31 +49,25 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
         password: String,
         context: Context,
         check: Boolean,
-        snackHostState: SnackbarHostState,
         navController: NavController,
     ): String{
-        var message = ""
-
         when (statusCode) {
             401, 422, 403 -> {
-                message = "El usuario no existe"
-                snackHostState.currentSnackbarData?.dismiss()
-                snackHostState.showSnackbar(message)
+                snackStatus.value = true
+                snackMessage.value = "El usuario no existe"
             }
             500 -> {
-                message = "Error al conectarse con la base de datos"
-                snackHostState.currentSnackbarData?.dismiss()
-                snackHostState.showSnackbar(message)
+                snackStatus.value = true
+                snackMessage.value = "Error al conectarse con la base de datos"
             }
             else -> {
                 if (check) rememberLogin(email, password, context)
-
                 navController.navigate(Screen.HomeScreen.route){
                     popUpTo(Screen.LoginScreen.route){ inclusive = true }
                 }
             }
         }
-        return message
+        return ""
     }
 
     private suspend fun rememberLogin(email: String, password: String, context: Context){

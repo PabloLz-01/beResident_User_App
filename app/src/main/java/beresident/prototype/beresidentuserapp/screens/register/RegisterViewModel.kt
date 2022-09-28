@@ -1,6 +1,5 @@
 package beresident.prototype.beresidentuserapp.screens.register
 
-import android.content.Context
 import androidx.compose.material.SnackbarHostState
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(private val authentication: Authentication): ViewModel() {
-    val error = MutableLiveData<Any>()
+    private val error = MutableLiveData<Any>()
 
     fun onCreate(
         name: String,
@@ -22,18 +21,18 @@ class RegisterViewModel @Inject constructor(private val authentication: Authenti
         phone: String,
         email: String,
         password: String,
-        snackbarHostState: SnackbarHostState,
+        snackHostState: SnackbarHostState,
         navController: NavController
     ){
         viewModelScope.launch {
             val result: Any = authentication.register(name, lastName, phone, email, password)
-            error.postValue(handler(result as Int, snackbarHostState, navController))
+            error.postValue(handler(result as Int, snackHostState, navController))
         }
     }
 
     private suspend fun handler(
         statusCode: Int,
-        snackbarHostState: SnackbarHostState,
+        snackHostState: SnackbarHostState,
         navController: NavController
     ): String {
         var message = ""
@@ -41,8 +40,13 @@ class RegisterViewModel @Inject constructor(private val authentication: Authenti
         when (statusCode) {
             401, 422, 403 -> {
                 message = "Por favor verifique los datos"
-                snackbarHostState.currentSnackbarData?.dismiss()
-                snackbarHostState.showSnackbar(message)
+                snackHostState.currentSnackbarData?.dismiss()
+                snackHostState.showSnackbar(message)
+            }
+            500 -> {
+                message = "Error al conectarse con la base de datos"
+                snackHostState.currentSnackbarData?.dismiss()
+                snackHostState.showSnackbar(message)
             }
             else -> {
                 navController.navigate(Screen.LoginScreen.route){

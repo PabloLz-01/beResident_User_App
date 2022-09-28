@@ -22,9 +22,11 @@ class BiometricService(val context: Context, val activity: AppCompatActivity, ) 
         if (BiometricManager.from(context).canAuthenticate(
                 BiometricManager.Authenticators.BIOMETRIC_STRONG
                     or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+                    or BiometricManager.Authenticators.BIOMETRIC_WEAK
             ) == BiometricManager.BIOMETRIC_SUCCESS) {
             canAuth = true
         }
+        print(canAuth)
         return canAuth
     }
 

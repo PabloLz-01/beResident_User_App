@@ -2,6 +2,7 @@ package beresident.prototype.beresidentuserapp.screens.shared
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -19,21 +20,20 @@ import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 
 @Composable
 fun CustomTopBar(text: String, action: () -> Unit) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colors.primary)
-            .padding(
-                horizontal = DefaultTheme.dimens.grid_0_5,
-                vertical = DefaultTheme.dimens.grid_1_5
-            )
-            .height(DefaultTheme.dimens.grid_4_5),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-
+            .height(78.dp)
+            .background(MaterialTheme.colors.primary)
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .height(65.dp)
+                .padding(
+                    horizontal = DefaultTheme.dimens.grid_0_5,
+                    vertical = DefaultTheme.dimens.grid_1_5
+                )
         ) {
             IconButton(
                 onClick = action,
@@ -56,6 +56,15 @@ fun CustomTopBar(text: String, action: () -> Unit) {
                 fontWeight = FontWeight.Bold
             )
         }
+        Box(
+            modifier = Modifier
+                .height(50.dp)
+                .fillMaxWidth()
+                .background(
+                    MaterialTheme.colors.primaryVariant,
+                    RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                )
+        )
     }
 }
 

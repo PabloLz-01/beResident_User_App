@@ -2,7 +2,6 @@ package beresident.prototype.beresidentuserapp.core.services
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.compose.runtime.collectAsState
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
@@ -61,7 +60,7 @@ class BiometricAuthentication(private val context: Context){
         val AUTHENTICATED_BY_BIOMETRIC_AUTHENTICATION = booleanPreferencesKey("autjenticated_by_biometric_authentication")
         val LOCK_TIME = intPreferencesKey("lock_time")
         val CAN_AUTH = booleanPreferencesKey("can_auth")
-        val ATTEMPS = intPreferencesKey("attemps")
+        val ATTEMPTS = intPreferencesKey("attemps")
     }
 
     suspend fun putBiometricAuthentication(value: Boolean){
@@ -121,10 +120,9 @@ class BiometricAuthentication(private val context: Context){
     }
 
     val getAttemps: Flow<Int?> = context.biometricStore.data.map { preferences ->
-        preferences[ATTEMPS] ?: 0
+        preferences[ATTEMPTS] ?: 0
     }
     suspend fun putAttemps(attemps: Int) {
-        context.biometricStore.edit { preferences -> preferences[ATTEMPS] = attemps }
+        context.biometricStore.edit { preferences -> preferences[ATTEMPTS] = attemps }
     }
-
 }
