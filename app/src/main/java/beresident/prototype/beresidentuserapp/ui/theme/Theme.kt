@@ -57,7 +57,7 @@ fun DefaultTheme(
     content: @Composable () -> Unit
 ) {
     val configuration = LocalConfiguration.current
-    val dimensions = if (configuration.screenWidthDp <= 360) smallDimensions else sw360Dimensions
+    val dimensions = if (configuration.screenWidthDp <= 320) smallDimensions else sw360Dimensions
 
     val colors = if (darkTheme) {
         DarkColorPalette

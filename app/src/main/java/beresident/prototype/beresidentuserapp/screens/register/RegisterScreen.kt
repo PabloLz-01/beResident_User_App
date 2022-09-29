@@ -1,5 +1,6 @@
 package beresident.prototype.beresidentuserapp.screens.register
 
+import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -18,11 +19,13 @@ import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import com.google.accompanist.insets.imePadding
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() {
     var register = registerViewModel
 
+    @SuppressLint("CoroutineCreationDuringComposition")
     @Composable
     fun Screen(navController: NavController){
         val name = remember { CustomTxtField() }
@@ -33,20 +36,32 @@ class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() 
         val password = remember { CustomTxtField() }
         val confirmPassword = remember { CustomTxtField() }
         val checkbox = remember { CustomCheckbox() }
+        var progress = register.progress.value
 
         val snackHostState = SnackbarHostState()
-        val snackMessage =  stringResource(R.string.accept_terms_advices_charges)
+        val snackTerms =  stringResource(R.string.accept_terms_advices_charges)
+        var snackStatus = register.snackStatus
+        val snackMessage = register.snackMessage.value
         val coroutineScope = rememberCoroutineScope()
 
         val terms = remember { mutableStateOf(false) }
         val advices = remember { mutableStateOf(false) }
         val charges = remember { mutableStateOf(false) }
 
+        if (snackStatus.value) {
+            MainScope().launch {
+                snackHostState.currentSnackbarData?.dismiss()
+                snackHostState.showSnackbar(snackMessage)
+                snackStatus.value = false
+
+            }
+        }
+
 
         Scaffold (
             backgroundColor = MaterialTheme.colors.primaryVariant,
             modifier = Modifier.padding(0.dp)
-        ){
+        ){ padding ->
             Column (
                 modifier = Modifier
                     .statusBarsPadding()
@@ -103,7 +118,7 @@ class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() 
                             }else {
                                 coroutineScope.launch {
                                     snackHostState.currentSnackbarData?.dismiss()
-                                    snackHostState.showSnackbar(snackMessage)
+                                    snackHostState.showSnackbar(snackTerms)
                                 }
                             }
                         }
@@ -114,6 +129,17 @@ class RegisterScreen(registerViewModel: RegisterViewModel): ComponentActivity() 
             Terms(terms.value){ terms.value = false }
             Advice(advices.value) { advices.value = false }
             Charge(charges.value) { charges.value = false }
+            if (progress!!){
+                Column(
+                    modifier = Modifier
+                        .background(Color.Black.copy(alpha = 0.6f))
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularIndicator(isDisplayed = true)
+                }
+            }
             BoxWithConstraints (
                 Modifier
                     .fillMaxSize()

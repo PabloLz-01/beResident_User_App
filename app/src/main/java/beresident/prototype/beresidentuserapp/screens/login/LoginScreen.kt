@@ -49,7 +49,7 @@ class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivit
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
         val snackHostState = SnackbarHostState()
-        val snackStatus = login.snackStatus.value
+        var snackStatus = login.snackStatus
         val snackMessage = login.snackMessage.value
 
         val biometricService = BiometricService(actContext, activity)
@@ -64,14 +64,16 @@ class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivit
             if (checkbox.isCheck) emailState.text = userEmail.value!!
         }
 
-         if (snackStatus) {
+         if (snackStatus.value) {
              scope.launch {
                  snackHostState.currentSnackbarData?.dismiss()
                  snackHostState.showSnackbar(snackMessage)
+                 snackStatus.value = false
+
              }
          }
 
-        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant){
+        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant){ padding ->
             Column (modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_1_5)){
                 LoginHeader(action = { navController.navigate(Screen.SettingsScreen.route) })
                 Column(

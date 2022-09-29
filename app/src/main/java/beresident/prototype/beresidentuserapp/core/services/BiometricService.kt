@@ -56,7 +56,9 @@ class BiometricService(val context: Context, val activity: AppCompatActivity, ) 
                                     navController.navigate(Screen.LoginScreen.route)
                                 }
                             } else {
-                                navController.navigate(Screen.HomeScreen.route)
+                                navController.navigate(Screen.HomeScreen.route){
+                                    popUpTo(Screen.LoginScreen.route){ inclusive = true }
+                                }
                                 biometricStore.putAttemps(attemps-1)
                             }
 
@@ -88,7 +90,9 @@ class BiometricService(val context: Context, val activity: AppCompatActivity, ) 
                     } else {
                         println(attemps)
                         biometricStore.putAttemps(attemps-1)
-                        navController.navigate(Screen.HomeScreen.route)
+                        navController.navigate(Screen.HomeScreen.route){
+                            popUpTo(Screen.HomeScreen.route){ inclusive = true }
+                        }
                     }
                 }
             }

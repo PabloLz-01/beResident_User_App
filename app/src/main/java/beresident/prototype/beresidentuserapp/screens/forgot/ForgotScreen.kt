@@ -2,6 +2,7 @@ package beresident.prototype.beresidentuserapp.screens.forgot
 
 import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -14,25 +15,36 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
+import beresident.prototype.beresidentuserapp.screens.shared.*
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
-import beresident.prototype.beresidentuserapp.screens.shared.CustomButton
-import beresident.prototype.beresidentuserapp.screens.shared.CustomOutlineBtn
-import beresident.prototype.beresidentuserapp.screens.shared.CustomTopBar
-import beresident.prototype.beresidentuserapp.screens.shared.CustomTxtField
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 class ForgotScreen (forgotViewModel: ForgotViewModel): ComponentActivity() {
     var forgot = forgotViewModel
 
-    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+    @SuppressLint("CoroutineCreationDuringComposition")
     @Composable
     fun Screen(navController: NavController){
         val emailState = remember { CustomTxtField() }
+        var progress = forgot.progress.value
 
         val scaffoldState = rememberScaffoldState()
         val snackHostState = SnackbarHostState()
+        var snackStatus = forgot.snackStatus
+        val snackMessage = forgot.snackMessage.value
 
-        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
+        if (snackStatus.value) {
+            MainScope().launch {
+                snackHostState.currentSnackbarData?.dismiss()
+                snackHostState.showSnackbar(snackMessage)
+                snackStatus.value = false
+
+            }
+        }
+
+        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){ padding ->
             Column (modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_1_5)){
                 CustomTopBar(
                     stringResource(R.string.recover_password),
@@ -61,6 +73,17 @@ class ForgotScreen (forgotViewModel: ForgotViewModel): ComponentActivity() {
                             forgot.onCreate(emailState.text, snackHostState, navController)
                         }
                     )
+                }
+            }
+            if (progress!!){
+                Column(
+                    modifier = Modifier
+                        .background(Color.Black.copy(alpha = 0.6f))
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularIndicator(isDisplayed = true)
                 }
             }
             BoxWithConstraints (

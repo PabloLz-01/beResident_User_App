@@ -29,7 +29,7 @@ fun LoginHeader(action: () -> Unit) {
                     start = 12.dp,
                     end = 12.dp
                 )
-                .height(DefaultTheme.dimens.grid_4_5),
+                .height(DefaultTheme.dimens.grid_4),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -60,14 +60,14 @@ fun LoginHeader(action: () -> Unit) {
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+                .height(DefaultTheme.dimens.grid_10)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = MaterialTheme.colors.primary)
                     .align(Alignment.TopCenter)
-                    .height(DefaultTheme.dimens.grid_15)
+                    .height(DefaultTheme.dimens.grid_10)
             )
             Box(
                 modifier = Modifier
@@ -84,8 +84,8 @@ fun LoginHeader(action: () -> Unit) {
                 contentDescription = "",
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .height(200.dp)
-                    .width(200.dp)
+                    .height(DefaultTheme.dimens.grid_10)
+                    .width(DefaultTheme.dimens.grid_10)
             )
         }
     }

@@ -41,6 +41,7 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
                 navController,
             )
         }
+
     }
 
     private suspend fun handler(

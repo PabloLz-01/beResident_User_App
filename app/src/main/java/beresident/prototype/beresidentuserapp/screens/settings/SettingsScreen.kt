@@ -43,7 +43,7 @@ class SettingsScreen(var activity: AppCompatActivity){
             backgroundColor = MaterialTheme.colors.primaryVariant,
             topBar = { CustomTopBar(stringResource(R.string.settings), action = {navController.popBackStack()}) },
             bottomBar = {},
-            content = {
+            content = { padding ->
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 4.dp, vertical = 16.dp)

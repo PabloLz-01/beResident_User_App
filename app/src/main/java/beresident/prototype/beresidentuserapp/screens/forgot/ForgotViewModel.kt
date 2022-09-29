@@ -1,6 +1,7 @@
 package beresident.prototype.beresidentuserapp.screens.forgot
 
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,28 +14,30 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ForgotViewModel @Inject constructor(private val authentication: Authentication): ViewModel(){
-    private val error = MutableLiveData<Any>()
+    val progress = mutableStateOf(false)
+    val snackStatus = mutableStateOf(false)
+    val snackMessage = mutableStateOf("")
 
     fun onCreate(email: String, snackHostState: SnackbarHostState, navController: NavController){
+        snackStatus.value = false
         viewModelScope.launch {
+            progress.value = true
             val result: Any = authentication.forgot(email)
-            error.postValue(handler(result as Int, snackHostState, navController))
+            progress.value = false
+            handler(result as Int, snackHostState, navController)
         }
     }
 
     private suspend fun handler(statusCode: Int, snackHostState: SnackbarHostState, navController: NavController): String {
-        var message = ""
 
         when (statusCode) {
             401, 422, 402, 404 -> {
-                message = "El correo electronico no se encuentra registrado"
-                snackHostState.currentSnackbarData?.dismiss()
-                snackHostState.showSnackbar(message)
+                snackStatus.value = true
+                snackMessage.value = "El correo electronico no se encuentra registrado"
             }
             500 -> {
-                message = "Error al conectarse con la base de datos"
-                snackHostState.currentSnackbarData?.dismiss()
-                snackHostState.showSnackbar(message)
+                snackStatus.value = true
+                snackMessage.value = "Error al conectarse con la base de datos"
             }
             else -> {
                 navController.navigate(Screen.LoginScreen.route){
@@ -42,7 +45,6 @@ class ForgotViewModel @Inject constructor(private val authentication: Authentica
                 }
             }
         }
-
-        return message
+        return ""
     }
 }

@@ -4,11 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="200dp"
     android:layout_gravity="center"
-    android:layout_marginBottom="200dp"
-    android:layout_marginEnd="50dp"
-    android:layout_marginStart="50dp"
     tools:context=".screens.splash.widgets.SplashActivity">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

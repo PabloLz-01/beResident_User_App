@@ -56,10 +56,11 @@ fun SplashScreen(navController: NavController){
         write.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
 
-    SplashView()
+
     LaunchedEffect(key1 = true, block = {
         read.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
     })
+    SplashView()
 }
 
 @ExperimentalCoroutinesApi
