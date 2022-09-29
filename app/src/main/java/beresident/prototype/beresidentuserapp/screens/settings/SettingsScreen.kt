@@ -35,7 +35,7 @@ class SettingsScreen(var activity: AppCompatActivity){
 
         val userCredentials = StoreUserCredentials(context)
         val biometricStore = BiometricAuthentication(context)
-        val attempts = biometricStore.getAttemps.collectAsState(initial = 0)
+        val attempts = biometricStore.getAttempts.collectAsState(initial = 0)
         val lockTime = biometricStore.getLockTime.collectAsState(initial = 0)
         val isBiometricAuth = biometricStore.getBiometricAuthentication.collectAsState(initial = false)
         val biometricService = BiometricService(context, activity)
@@ -43,7 +43,7 @@ class SettingsScreen(var activity: AppCompatActivity){
             backgroundColor = MaterialTheme.colors.primaryVariant,
             topBar = { CustomTopBar(stringResource(R.string.settings), action = {navController.popBackStack()}) },
             bottomBar = {},
-            content = {
+            content = { padding ->
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 4.dp, vertical = 16.dp)

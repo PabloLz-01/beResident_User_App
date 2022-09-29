@@ -1,7 +1,6 @@
 package beresident.prototype.beresidentuserapp.screens.login
 
 import android.content.Context
-import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val authentication: Authentication) : ViewModel(){
+class LoginViewModel @Inject constructor(private val authentication: Authentication) : ViewModel() {
     val progress = mutableStateOf(false)
     val snackStatus = mutableStateOf(false)
     val snackMessage = mutableStateOf("")
@@ -41,6 +40,7 @@ class LoginViewModel @Inject constructor(private val authentication: Authenticat
                 navController,
             )
         }
+
     }
 
     private suspend fun handler(

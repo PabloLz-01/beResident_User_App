@@ -1,9 +1,10 @@
 package beresident.prototype.beresidentuserapp.core.misc
 
+//Defines our navigation routes
 sealed class Screen(val route: String) {
 
+    //Routes
     object SplashScreen: Screen("splash_screen")
-    object MainScreen: Screen("main_screen")
     object LoginScreen: Screen("login_screen")
     object RegisterScreen: Screen("register_screen")
     object ForgotScreen: Screen("forgot_screen")
@@ -11,6 +12,7 @@ sealed class Screen(val route: String) {
     object NoInternet: Screen("no-internet-screen")
     object HomeScreen: Screen("home-screen")
 
+    //Routes with arguments
     fun withArgs(vararg args: String): String {
         return buildString {
             append(route)

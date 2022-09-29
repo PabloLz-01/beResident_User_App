@@ -7,8 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-class CircularProgress
-
 @Composable
 fun CircularIndicator(
     isDisplayed: Boolean

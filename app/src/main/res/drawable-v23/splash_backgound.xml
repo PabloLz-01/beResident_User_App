@@ -6,10 +6,7 @@
     <item android:drawable="@color/primary" />
 
     <item
-        android:drawable="@drawable/ic_beresident"
-        android:height="60dp"
-        android:width="240dp"
-        android:bottom="23dp"
+        android:drawable="@drawable/ic_layer_3__2_"
         android:gravity="center">
     </item>
 

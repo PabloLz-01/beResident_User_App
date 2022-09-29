@@ -16,6 +16,7 @@ class StoreTheme(private val context: Context) {
         val THEME = intPreferencesKey("theme")
     }
 
+    //APP THEME ----------------------------------------
     val getTheme: Flow<Int?> = context.dataStore.data.map { preferences ->
         preferences[THEME] ?: 0
     }
@@ -53,16 +54,17 @@ class StoreUserCredentials(private val context: Context) {
 }
 
 class BiometricAuthentication(private val context: Context){
+    //SAVE USER BIOMETRICS AND CONFIGURATION ----------------------
     companion object {
         private val Context.biometricStore: DataStore<Preferences> by preferencesDataStore("biometric")
         val BIOMETRIC_AUTHENTICATION = booleanPreferencesKey("biometric_authentication")
         val BIOMETRIC_AUTHENTICATION_TIME = longPreferencesKey("biometric_authentication_time")
-        val AUTHENTICATED_BY_BIOMETRIC_AUTHENTICATION = booleanPreferencesKey("autjenticated_by_biometric_authentication")
+        val AUTHENTICATED_BY_BIOMETRIC_AUTHENTICATION = booleanPreferencesKey("authenticated_by_biometric_authentication")
         val LOCK_TIME = intPreferencesKey("lock_time")
-        val CAN_AUTH = booleanPreferencesKey("can_auth")
-        val ATTEMPTS = intPreferencesKey("attemps")
+        val ATTEMPTS = intPreferencesKey("attempts")
     }
 
+    //BIOMETRIC AUTHENTICATION ------------------------------
     suspend fun putBiometricAuthentication(value: Boolean){
         context.biometricStore.edit { preferences ->
             preferences[BIOMETRIC_AUTHENTICATION] = value
@@ -73,6 +75,7 @@ class BiometricAuthentication(private val context: Context){
         preferences[BIOMETRIC_AUTHENTICATION] ?: false
     }
 
+    //BIOMETRIC AUTHENTICATION TIME ------------------------
     @SuppressLint("CoroutineCreationDuringComposition")
     suspend fun putBiometricAuthenticationTime(reset: Boolean = false, lockTime: Int){
         println(lockTime)
@@ -92,6 +95,7 @@ class BiometricAuthentication(private val context: Context){
         preferences[BIOMETRIC_AUTHENTICATION_TIME] ?: System.currentTimeMillis()
     }
 
+    //AUTHENTICATED BY BIOMETRIC AUTHENTICATION ---------
     suspend fun putAuthenticatedByBiometricAuthentication(value: Boolean){
         context.biometricStore.edit { preferences ->
             preferences[AUTHENTICATED_BY_BIOMETRIC_AUTHENTICATION] = value
@@ -102,6 +106,7 @@ class BiometricAuthentication(private val context: Context){
         preferences[AUTHENTICATED_BY_BIOMETRIC_AUTHENTICATION] ?: false
     }
 
+    //LOCK TIME ------------------------------------------
     suspend fun putLockTime(value: Int, reset: Boolean){
         context.biometricStore.edit { preferences -> preferences[LOCK_TIME] = value }
         putBiometricAuthentication(reset)
@@ -111,18 +116,11 @@ class BiometricAuthentication(private val context: Context){
         preferences[LOCK_TIME] ?: 0
     }
 
-    suspend fun  putCanAuth(value: Boolean){
-        context.biometricStore.edit { preferences -> preferences[CAN_AUTH] = value }
-    }
-
-    val getCanAuth: Flow<Boolean?> = context.biometricStore.data.map { preferences ->
-        preferences[CAN_AUTH] ?: false
-    }
-
-    val getAttemps: Flow<Int?> = context.biometricStore.data.map { preferences ->
+    //BIOMETRIC ATTEMPTS -----------------------------------------
+    val getAttempts: Flow<Int?> = context.biometricStore.data.map { preferences ->
         preferences[ATTEMPTS] ?: 0
     }
-    suspend fun putAttemps(attemps: Int) {
-        context.biometricStore.edit { preferences -> preferences[ATTEMPTS] = attemps }
+    suspend fun putAttempts(attempts: Int) {
+        context.biometricStore.edit { preferences -> preferences[ATTEMPTS] = attempts }
     }
 }

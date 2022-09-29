@@ -1,7 +1,6 @@
 package beresident.prototype.beresidentuserapp.screens.forgot
 
-import androidx.compose.material.SnackbarHostState
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -11,38 +10,42 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
+@HiltViewModel //Forgot view model calls to the API
 class ForgotViewModel @Inject constructor(private val authentication: Authentication): ViewModel(){
-    private val error = MutableLiveData<Any>()
+    val progress = mutableStateOf(false) //Progress of the call
+    val snackStatus = mutableStateOf(false) //Status of the snack bar
+    val snackMessage = mutableStateOf("") //Snack bar message
 
-    fun onCreate(email: String, snackHostState: SnackbarHostState, navController: NavController){
+    // Call our Forgot API sending the correct parameters
+    fun onCreate(email: String, navController: NavController){
+        snackStatus.value = false
         viewModelScope.launch {
+            progress.value = true
             val result: Any = authentication.forgot(email)
-            error.postValue(handler(result as Int, snackHostState, navController))
+            progress.value = false
+            handler(result as Int, navController)
         }
     }
 
-    private suspend fun handler(statusCode: Int, snackHostState: SnackbarHostState, navController: NavController): String {
-        var message = ""
-
+    //Function that handles any errors may appear in the api callback
+    private fun handler(statusCode: Int, navController: NavController){
         when (statusCode) {
+            //Backend error
             401, 422, 402, 404 -> {
-                message = "El correo electronico no se encuentra registrado"
-                snackHostState.currentSnackbarData?.dismiss()
-                snackHostState.showSnackbar(message)
+                snackStatus.value = true
+                snackMessage.value = "El correo electronico no se encuentra registrado"
             }
+            //Server error
             500 -> {
-                message = "Error al conectarse con la base de datos"
-                snackHostState.currentSnackbarData?.dismiss()
-                snackHostState.showSnackbar(message)
+                snackStatus.value = true
+                snackMessage.value = "Error al conectarse con la base de datos"
             }
+            //Succeed call
             else -> {
                 navController.navigate(Screen.LoginScreen.route){
                     popUpTo(Screen.ForgotScreen.route){ inclusive = true }
                 }
             }
         }
-
-        return message
     }
 }

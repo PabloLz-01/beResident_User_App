@@ -2,6 +2,7 @@ package beresident.prototype.beresidentuserapp.screens.forgot
 
 import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -14,30 +15,43 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
+import beresident.prototype.beresidentuserapp.screens.shared.*
 import beresident.prototype.beresidentuserapp.ui.theme.DefaultTheme
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
-import beresident.prototype.beresidentuserapp.screens.shared.CustomButton
-import beresident.prototype.beresidentuserapp.screens.shared.CustomOutlineBtn
-import beresident.prototype.beresidentuserapp.screens.shared.CustomTopBar
-import beresident.prototype.beresidentuserapp.screens.shared.CustomTxtField
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
+//Forgot screen class
 class ForgotScreen (forgotViewModel: ForgotViewModel): ComponentActivity() {
+    //Gets forgot view model from Main Activity
     var forgot = forgotViewModel
 
-    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+    //Forgot screen view
+    @SuppressLint("CoroutineCreationDuringComposition")
     @Composable
     fun Screen(navController: NavController){
-        val emailState = remember { CustomTxtField() }
+        val emailState = remember { CustomTxtField() }// Email state
+        val progress = forgot.progress.value //Api boolean request progress
 
-        val scaffoldState = rememberScaffoldState()
+        //Snack bar components
         val snackHostState = SnackbarHostState()
+        val snackStatus = forgot.snackStatus
+        val snackMessage = forgot.snackMessage.value
 
-        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant, scaffoldState = scaffoldState){
+        //Snack bar call
+        if (snackStatus.value) {
+            MainScope().launch {
+                snackHostState.currentSnackbarData?.dismiss()
+                snackHostState.showSnackbar(snackMessage)
+                snackStatus.value = false
+
+            }
+        }
+
+        //View
+        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant){ padding ->
             Column (modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_1_5)){
-                CustomTopBar(
-                    stringResource(R.string.recover_password),
-                    action = {navController.popBackStack()}
-                )
+                CustomTopBar(stringResource(R.string.recover_password), action = {navController.popBackStack()})
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)
@@ -58,19 +72,32 @@ class ForgotScreen (forgotViewModel: ForgotViewModel): ComponentActivity() {
                         textColor = Color.White,
                         background = MaterialTheme.colors.secondary,
                         action = {
-                            forgot.onCreate(emailState.text, snackHostState, navController)
+                            forgot.onCreate(emailState.text, navController)
                         }
                     )
                 }
             }
+
+            //Progress circle call
+            if (progress){
+                Column(
+                    modifier = Modifier
+                        .background(Color.Black.copy(alpha = 0.6f))
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularIndicator(isDisplayed = true)
+                }
+            }
+
+            //Snack bar container
             BoxWithConstraints (
                 Modifier
                     .fillMaxSize()
                     .padding(DefaultTheme.dimens.grid_2)){
                 Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                    beresident.prototype.beresidentuserapp.screens.shared.SnackbarHost(
-                        snackHostState,
-                    )
+                    SnackbarHost(snackHostState)
                 }
             }
         }

@@ -1,6 +1,5 @@
-package beresident.prototype.beresidentuserapp.screens.splash.widgets
+package beresident.prototype.beresidentuserapp.screens.splash
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,18 +9,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.misc.Screen
-import beresident.prototype.beresidentuserapp.screens.shared.CustomButton
+import beresident.prototype.beresidentuserapp.screens.shared.CustomOutlineBtn
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NoInternetScreen (navController: NavController){
-    Scaffold (backgroundColor = MaterialTheme.colors.primary,){
+    Scaffold (backgroundColor = MaterialTheme.colors.primary){ padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -44,18 +43,24 @@ fun NoInternetScreen (navController: NavController){
                 )
             }
             Text(
-                "Verifica tu conexión a internet",
+                stringResource(R.string.verify_your_internet_connection),
                 color = Color.White,
                 modifier = Modifier.padding(16.dp),
                 fontSize = 13.sp,
                 textAlign = TextAlign.Center
             )
             Box(
-                Modifier.width(200.dp).padding(top = 16.dp)
+                Modifier
+                    .width(200.dp)
+                    .padding(top = 16.dp)
             ) {
-                CustomButton(text = "Volver a intentar") {
-                    navController.navigate(Screen.SplashScreen.route)
-                }
+                CustomOutlineBtn(
+                    text = stringResource(R.string.try_again),
+                    foreground = MaterialTheme.colors.secondary,
+                    action = {
+                        navController.navigate(Screen.SplashScreen.route)
+                    }
+                )
             }
         }
     }

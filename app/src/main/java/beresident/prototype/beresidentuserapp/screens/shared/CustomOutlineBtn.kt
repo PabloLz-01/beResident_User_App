@@ -28,7 +28,7 @@ fun CustomOutlineBtn(
     val fg = foreground ?: MaterialTheme.colors.secondary
 
     OutlinedButton(
-        modifier = Modifier.height(DefaultTheme.dimens.grid_8).fillMaxWidth(),
+        modifier = Modifier.height(DefaultTheme.dimens.grid_6).fillMaxWidth(),
         onClick = action,
         shape = CircleShape,
         elevation = elevation(

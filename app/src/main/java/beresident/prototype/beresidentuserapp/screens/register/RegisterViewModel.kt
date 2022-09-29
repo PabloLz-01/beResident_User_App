@@ -1,6 +1,7 @@
 package beresident.prototype.beresidentuserapp.screens.register
 
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,7 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(private val authentication: Authentication): ViewModel() {
-    private val error = MutableLiveData<Any>()
+    val progress = mutableStateOf(false)
+    val snackStatus = mutableStateOf(false)
+    val snackMessage = mutableStateOf("")
 
     fun onCreate(
         name: String,
@@ -24,29 +27,27 @@ class RegisterViewModel @Inject constructor(private val authentication: Authenti
         snackHostState: SnackbarHostState,
         navController: NavController
     ){
+        snackStatus.value = false
         viewModelScope.launch {
+            progress.value = true
             val result: Any = authentication.register(name, lastName, phone, email, password)
-            error.postValue(handler(result as Int, snackHostState, navController))
+            progress.value = false
+            handler(result as Int, navController)
         }
     }
 
-    private suspend fun handler(
+    private fun handler(
         statusCode: Int,
-        snackHostState: SnackbarHostState,
         navController: NavController
     ): String {
-        var message = ""
-
         when (statusCode) {
             401, 422, 403 -> {
-                message = "Por favor verifique los datos"
-                snackHostState.currentSnackbarData?.dismiss()
-                snackHostState.showSnackbar(message)
+                snackStatus.value = true
+                snackMessage.value = "Por favor verifique los datos"
             }
             500 -> {
-                message = "Error al conectarse con la base de datos"
-                snackHostState.currentSnackbarData?.dismiss()
-                snackHostState.showSnackbar(message)
+                snackStatus.value = true
+                snackMessage.value = "Error al conectarse con la base de datos"
             }
             else -> {
                 navController.navigate(Screen.LoginScreen.route){
@@ -54,6 +55,6 @@ class RegisterViewModel @Inject constructor(private val authentication: Authenti
                 }
             }
         }
-        return message
+        return ""
     }
 }

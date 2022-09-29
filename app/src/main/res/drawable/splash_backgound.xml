@@ -9,7 +9,7 @@
         android:bottom="23dp"
         android:gravity="center">
         <bitmap
-            android:src="@drawable/ic_beresident"
+            android:src="@drawable/ic_layer_3__2_"
             android:gravity="center"
             />
     </item>

@@ -4,25 +4,25 @@ import beresident.prototype.beresidentuserapp.core.services.AuthenticationServic
 import com.google.gson.annotations.SerializedName
 import javax.inject.Inject
 
+//Manage all the authentication response calls
 class Authentication @Inject constructor(private val authenticationService: AuthenticationService) {
+    //Login response call
     suspend fun invoke(email: String, password: String): Any {
         authenticationService.authenticate(email, password)
         return authenticationService.result
     }
 
+    //Register response call
     suspend fun register(name: String, lastName: String, phone: String, email: String, password: String): Any {
         authenticationService.register(name, lastName, phone, email, password)
         return authenticationService.result
     }
 
+    //Forgot password response call
     suspend fun forgot(email: String): Any {
         authenticationService.forgot(email)
         return authenticationService.result
     }
-}
-
-class Register @Inject constructor(private val authenticationService: AuthenticationService) {
-
 }
 
 data class UserModel(

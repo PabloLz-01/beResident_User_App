@@ -9,17 +9,20 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
+//Declares our two types of states connection
 sealed class ConnectionState {
     object Available: ConnectionState()
     object Unavailable: ConnectionState()
 }
 
+//Defines our connection parameters variable
 val Context.currentConnectivityState: ConnectionState
     get() {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return getCurrentConnectivityState(connectivityManager)
     }
 
+//Gets our current connection state
 private fun getCurrentConnectivityState( connectivityManager: ConnectivityManager): ConnectionState{
     val connected = connectivityManager.allNetworks.any { network ->
         connectivityManager.getNetworkCapabilities(network)
@@ -29,6 +32,7 @@ private fun getCurrentConnectivityState( connectivityManager: ConnectivityManage
     return if (connected) ConnectionState.Available else ConnectionState.Unavailable
 }
 
+//Returns our connectivity variable as type flow
 @ExperimentalCoroutinesApi
 fun Context.observeConnectivityAsFlow() = callbackFlow {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -52,6 +56,7 @@ fun Context.observeConnectivityAsFlow() = callbackFlow {
     }
 }
 
+//Sets out connection status
 fun NetworkCallback(callback: (ConnectionState) -> Unit): ConnectivityManager.NetworkCallback {
     return object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {

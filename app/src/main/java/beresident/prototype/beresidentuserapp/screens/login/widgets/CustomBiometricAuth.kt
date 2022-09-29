@@ -46,7 +46,7 @@ fun BiometricAuth(
                 succeedAction = {
                     onBiometricSuccess()
                     login()},
-                attemps = attempts,
+                attempts = attempts,
                 lockTime = lockTime
             )
 

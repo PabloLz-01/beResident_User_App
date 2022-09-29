@@ -10,10 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun ProvideDimens(
@@ -40,15 +36,6 @@ private val LightColorPalette = lightColors(
     primaryVariant = Color(255,255,255),
     secondary = Color(53,176,130),
     surface = Color(240,240,240, 255)
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
 )
 
 @Composable
@@ -57,7 +44,7 @@ fun DefaultTheme(
     content: @Composable () -> Unit
 ) {
     val configuration = LocalConfiguration.current
-    val dimensions = if (configuration.screenWidthDp <= 360) smallDimensions else sw360Dimensions
+    val dimensions = if (configuration.screenWidthDp <= 320) smallDimensions else sw360Dimensions
 
     val colors = if (darkTheme) {
         DarkColorPalette
@@ -80,21 +67,4 @@ object DefaultTheme {
     val dimens: Dimensions
         @Composable
         get() = LocalAppDimens.current
-}
-
-val Dimens : Dimensions
-    @Composable
-    get() = DefaultTheme.dimens
-
-class ThemeViewModel: ViewModel() {
-    private val _theme = MutableLiveData("Auto")
-    val theme: LiveData<String> = _theme
-
-    fun onThemeChange(newTheme: String) {
-        when (newTheme) {
-            "Auto" -> _theme.value = "Light"
-            "Light" -> _theme.value = "Dark"
-            "Dark" -> _theme.value = "Auto"
-        }
-    }
 }

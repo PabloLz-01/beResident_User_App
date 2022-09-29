@@ -11,6 +11,9 @@
     <string name="settings">Ajustes</string>
     <string name="system">Sistema</string>
     <string name="theme">Tema</string>
+    <string name="biometric_authentication">Autentificación Biometrica</string>
+    <string name="try_again">Volver a intentar</string>
+    <string name="verify_your_internet_connection">Verifica tu conexión a internet</string>
 
     <!-- Login, register and forgot password-->
     <string name="login">Iniciar sesión</string>
@@ -30,7 +33,7 @@
     <string name="terms">Terminos y condiciones</string>
     <string name="privacy_advice">Aviso de Privacidad</string>
     <string name="periodic_charges">Aviso de Cargos Periodicos</string>
-    <string name="enable_biometric_auth">Habilitar autentificacion biometrica</string>
+    <string name="enable_biometric_auth">Habilitar autentificación biometrica</string>
 
 
     <!-- Examples -->

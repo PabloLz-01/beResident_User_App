@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(){
 
         super.onCreate(savedInstanceState)
         setContent {
-            val userCredentials = StoreUserCredentials(this)
+            val userCredentials = StoreUserCredentials(this)// User value in datastore
             val themeValue = dataStore.getTheme.collectAsState(initial = 0.0)//Theme value in datastore
             var theme = isSystemInDarkTheme()//Default value for theme
 
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity(){
             val isBiometricAuthentication = biometricStore.getBiometricAuthentication.collectAsState(initial = false)
             val isAuthenticatedByBiometricAuthentication = biometricStore.getAuthenticatedByBiometricAuthentication.collectAsState(initial = false)
             val biometricAuthenticationTime = biometricStore.getBiometricAuthenticationTime.collectAsState(initial = 0)
-            val attempts = biometricStore.getAttemps.collectAsState(initial = 0)
+            val attempts = biometricStore.getAttempts.collectAsState(initial = 0)
             val lockTime = biometricStore.getLockTime.collectAsState(initial = 0)
 
             val userEmail = userCredentials.getEmail.collectAsState(initial = "")
@@ -83,21 +83,16 @@ class MainActivity : AppCompatActivity(){
             }
 
             if (focus.value == true) {//Verifies if app was on foreground
-                println(isAuthenticatedByBiometricAuthentication.value)
-                println(isBiometricAuthentication.value)
-                println(isBiometricAuthenticationExpired.value)
-
                 //Detects if biometric auth time is expired
                 biometricExpiredLiveData.value = System.currentTimeMillis() >= biometricExpiredLiveDataTime.value!!
 
                 biometricExpiredLiveDataTime.value = biometricAuthenticationTime.value!! //Gets time save in store
                 focusLiveData.value = false // Resets focus state
 
-
-                scope.launch {
-                    //If time expired, then our authenticatedByBiometric is false
+                scope.launch { //If time expired, then our authenticatedByBiometric is false
                     if (isBiometricAuthentication.value!!) biometricStore.putAuthenticatedByBiometricAuthentication(false)
                 }
+
                 if (userEmail.value != "" && userPassword.value != ""){
                     if (isBiometricAuthentication.value!!){ //Verifies if biometric auth is activated
                         if( !isAuthenticatedByBiometricAuthentication.value!! && isBiometricAuthenticationExpired.value!!) {
@@ -114,16 +109,11 @@ class MainActivity : AppCompatActivity(){
                         }
                     }
                 }
-
             } else {
                 biometricExpiredLiveData.value = System.currentTimeMillis() >= biometricExpiredLiveDataTime.value!!
-
                 biometricExpiredLiveDataTime.value = biometricAuthenticationTime.value!! //Gets time save in store
                 focusLiveData.value = false // Resets focus state
-
-
-                scope.launch {
-                    //If time expired, then our authenticatedByBiometric is false
+                scope.launch { //If time expired, then our authenticatedByBiometric is false
                     if (isBiometricAuthentication.value!!) biometricStore.putAuthenticatedByBiometricAuthentication(false)
                 }
             }
@@ -133,8 +123,8 @@ class MainActivity : AppCompatActivity(){
     //Detects when app comes from foreground
     override fun onStart() {
         super.onStart()
-
-        focusLiveData.value = true //Starts our focus state
+        //Starts our focus state
+        focusLiveData.value = true
         //Detects if biometric auth time is expired
         biometricExpiredLiveData.value = System.currentTimeMillis() >= biometricExpiredLiveDataTime.value!!
     }

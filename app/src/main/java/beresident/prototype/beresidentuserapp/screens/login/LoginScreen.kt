@@ -37,6 +37,7 @@ class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivit
     @SuppressLint("CoroutineCreationDuringComposition")
     @Composable
     fun Screen(navController: NavController) {
+
         val userStore = StoreUserCredentials(LocalContext.current)
         val userEmail = userStore.getEmail.collectAsState(initial = "")
         val userPassword = userStore.getPassword.collectAsState(initial = "")
@@ -44,34 +45,36 @@ class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivit
         val emailState = remember { CustomTxtField() }
         val passwordState = remember { CustomTxtField() }
         val checkbox =  remember { CustomCheckbox() }
-        var progress = login.progress.value
+        val progress = login.progress.value
 
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
         val snackHostState = SnackbarHostState()
-        val snackStatus = login.snackStatus.value
+        val snackStatus = login.snackStatus
         val snackMessage = login.snackMessage.value
 
         val biometricService = BiometricService(actContext, activity)
         val biometricStore = BiometricAuthentication(context)
         val biometricAuthentication = biometricStore.getBiometricAuthentication
             .collectAsState(initial = false)
-        val attempts = biometricStore.getAttemps.collectAsState(initial = 0)
+        val attempts = biometricStore.getAttempts.collectAsState(initial = 0)
         val lockTime = biometricStore.getLockTime.collectAsState(initial = 0)
 
-        LaunchedEffect(key1 = true){
+        LaunchedEffect(true) {
             checkbox.isCheck = userEmail.value!! != "" && userPassword.value!! != ""
             if (checkbox.isCheck) emailState.text = userEmail.value!!
         }
 
-         if (snackStatus) {
+         if (snackStatus.value) {
              scope.launch {
                  snackHostState.currentSnackbarData?.dismiss()
                  snackHostState.showSnackbar(snackMessage)
+                 snackStatus.value = false
+
              }
          }
 
-        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant){
+        Scaffold (backgroundColor = MaterialTheme.colors.primaryVariant){ padding ->
             Column (modifier = Modifier.padding(bottom = DefaultTheme.dimens.grid_1_5)){
                 LoginHeader(action = { navController.navigate(Screen.SettingsScreen.route) })
                 Column(
@@ -154,7 +157,7 @@ class LoginScreen(loginViewModel: LoginViewModel, var activity: AppCompatActivit
                     }
                 }
             }
-            if (progress!!){
+            if (progress){
                 Column(
                     modifier = Modifier
                         .background(Color.Black.copy(alpha = 0.6f))

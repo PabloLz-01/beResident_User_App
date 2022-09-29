@@ -7,13 +7,14 @@ import retrofit2.Call
 import java.lang.Exception
 import javax.inject.Inject
 
+//Makes the call to our api, sending our data and expecting a result based in a response code
 class AuthenticationService @Inject constructor(private val apiService: ApiService) {
-    var result: Any = 404
+    var result: Any = 404 //Default error code
 
+    //Login api call
     suspend fun authenticate(email: String, password: String): Any {
         return withContext(Dispatchers.IO){
             val call: Call<LoginModel> = apiService.login(UserModel(email, password))
-
             try {
                 val  response = call.execute()
                 result = response.code()
@@ -25,6 +26,7 @@ class AuthenticationService @Inject constructor(private val apiService: ApiServi
         }
     }
 
+    //Register api call
     suspend fun register(
         name: String,
         lastName: String,
@@ -34,7 +36,6 @@ class AuthenticationService @Inject constructor(private val apiService: ApiServi
     ): Any {
         return withContext(Dispatchers.IO){
             val call: Call<RegisterModel> = apiService.register(RegisterModel(name, lastName, phone, email, password))
-
             try {
                 val  response = call.execute()
                 result = response.code()
@@ -46,10 +47,10 @@ class AuthenticationService @Inject constructor(private val apiService: ApiServi
         }
     }
 
+    //Forgot password api call
     suspend fun forgot(email: String): Any {
         return withContext(Dispatchers.IO){
             val call: Call<URLModel> = apiService.forgot(ForgotModel(email))
-
             try {
                 val  response = call.execute()
                 result = response.code()

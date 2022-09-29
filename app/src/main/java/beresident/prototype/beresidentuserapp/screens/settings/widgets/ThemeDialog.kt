@@ -6,12 +6,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import beresident.prototype.beresidentuserapp.R
 import beresident.prototype.beresidentuserapp.core.services.StoreTheme
-import beresident.prototype.beresidentuserapp.screens.shared.CustomButton
+import beresident.prototype.beresidentuserapp.screens.shared.CustomOutlineBtn
 import beresident.prototype.beresidentuserapp.screens.shared.CustomRadioButton
 import beresident.prototype.beresidentuserapp.ui.theme.Grey
 import kotlinx.coroutines.launch
@@ -129,9 +132,13 @@ fun ThemeDialog(
                         })
                     }
                     Row(modifier = Modifier.padding(horizontal = 16.dp)) {
-                        CustomButton(text = "Aceptar") {
-                            dismissDialog()
-                        }
+                        CustomOutlineBtn(
+                            text = stringResource(R.string.accept),
+                            textColor = White,
+                            background = MaterialTheme.colors.secondary,
+                            foreground = MaterialTheme.colors.secondary,
+                            action = { dismissDialog() }
+                        )
                     }
                 }
             }    
